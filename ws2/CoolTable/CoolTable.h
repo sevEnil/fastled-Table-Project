@@ -1,0 +1,81 @@
+#include "Airpump.h"
+#include<OctoWS2811.h>
+#include<FastLED.h>
+#include <Bounce.h>
+#include "SingleStripeAnimationPlayer.h"
+#include "LedPart.h"
+#include "Animator.h"
+#include <vector>
+
+#ifndef TABLE_H_
+#define TABLE_H_
+#define NUM_LEDS_PER_STRIP 170
+#define NUM_STRIPS 8
+
+using namespace std;
+
+class Table {
+public:
+	CRGBArray<NUM_STRIPS * NUM_LEDS_PER_STRIP> ledArray;
+	Airpump airpump = Airpump();
+	Table();
+	virtual ~Table();
+	void update();
+private:
+	int buttonMutePumpPin = 22;
+	int buttonBrightnessPin = 19;
+	int buttonNextAnimationPin = 23;
+	int buttonUnknownsPin = 17;
+	int micPin = 1;
+	int numOfTopLeds = 168;
+	int numOfLeftLeds = 63;
+	int numOfRightLeds = 63;
+	int numOfBackLeds = 63;
+	int numOfFeetLeds = 7;
+	int numOfFrontLeds = 62;
+	int stripeNumTopLeds = 5;
+	int stripeNumFrontLeds = 4;
+	int stripeNumleftLeds = 7;
+	int stripeNumRightLeds = 2;
+	int stripeNumBackLeds = 6;
+	int stripeNumFeetLeds = 3;
+
+	int animationMode = 0;
+	int updateDelay = 20; //general delay next update after 20ms (mostly nonblocking)
+	int colorIndex = 0;
+
+	Bounce buttonMutePump = Bounce(buttonMutePumpPin, 30); // 10 ms debounce
+	Bounce buttonBrightness = Bounce(buttonBrightnessPin, 30);
+	Bounce buttonNextAnimation = Bounce(buttonNextAnimationPin, 30);
+	Bounce buttonUnknowns = Bounce(buttonUnknownsPin, 30);
+	unsigned long buttonTimePressed = 0;
+
+	LedPart topLeds;
+	LedPart frontLeds;
+	LedPart leftLeds;
+	LedPart rightLeds;
+	LedPart backLeds;
+	LedPart feetLeds;
+	SingleStripeAnimationPlayer player = SingleStripeAnimationPlayer();
+	Animator animator = Animator();
+	void updateButtonStates();
+	int checkButtonState(Bounce &button);
+	int checkButtonState2(Bounce &button);
+	void setColorforAllParts();
+	void increaseColorForAllParts();
+	void increaseDelayForAllParts();
+	void setColorForLedPart(uint8_t hue1, uint8_t hue2, LedPart &part);
+	void playAnimation();
+	void initializePartsForAnimation();
+	void callAnimationMethod(void (SingleStripeAnimationPlayer::*animationMethod)(LedPart&),LedPart &part ...);
+
+	struct CRGB * getTopLedsArray();
+	struct CRGB * getFrontLedsArray();
+	struct CRGB * getLeftLedsArray();
+	struct CRGB * getRightLedsArray();
+	struct CRGB * getBackLedsArray();
+	struct CRGB * getFeetLedsArray();
+	struct CRGB * getLedsForStripe(int nStripe, int nlength);
+
+};
+#endif /* TABLE_H_ */

@@ -1,0 +1,96 @@
+/*
+ * SingleStripeAnimationPlayer.cpp
+ *
+ *  Created on: 22.02.2017
+ *      Author: sleipnir
+ */
+
+#include "SingleStripeAnimationPlayer.h"
+
+
+SingleStripeAnimationPlayer::SingleStripeAnimationPlayer() {
+	// TODO Auto-generated constructor stub
+
+}
+
+SingleStripeAnimationPlayer::~SingleStripeAnimationPlayer() {
+	// TODO Auto-generated destructor stub
+}
+
+
+void SingleStripeAnimationPlayer::update(){
+	 EVERY_N_MILLISECONDS( 20 ) { gHue++; }
+}
+
+void SingleStripeAnimationPlayer::playConfetti(struct CRGB *ledsArray, int nLedsToPlay){
+	 fadeToBlackBy( ledsArray, nLedsToPlay, 10);
+	  int pos = random16(nLedsToPlay);
+	  ledsArray[pos] += CHSV( gHue + random8(64), 200, 255);
+}
+
+//*this method shows n static red dots to indicate which ledstrip its wired to.
+void SingleStripeAnimationPlayer::octoWS2811StripTesterRainbow(struct CRGB *ledsArray, int numStrips, int numLedsPerStrip) {
+	static uint8_t hue = 0;
+	for (int i = 0; i < numStrips; i++) {
+		for (int j = 0; j < numLedsPerStrip; j++) {
+			ledsArray[(i * numLedsPerStrip) + j] = CHSV((32 * i) + hue + j, 192,
+					255);
+		}
+	}
+	// Set the first n leds on each strip to show which strip it is
+	for (int i = 0; i < numStrips; i++) {
+		for (int j = 0; j <= i; j++) {
+			ledsArray[(i * numLedsPerStrip) + j] = CRGB::Red;
+		}
+	}
+	hue++;
+}
+
+void SingleStripeAnimationPlayer::playRainbow(struct CRGB *ledsArray, int nLedsToPlay)
+{
+  // FastLED's built-in rainbow generator
+  fill_rainbow( ledsArray, nLedsToPlay, gHue, 7);
+}
+
+void SingleStripeAnimationPlayer::playRainbowWithGlitter(struct CRGB *ledsArray, int nLedsToPlay)
+{
+  // built-in FastLED rainbow, plus some random sparkly glitter
+  playRainbow(ledsArray,nLedsToPlay);
+  addGlitter(ledsArray,nLedsToPlay,80);
+}
+
+void SingleStripeAnimationPlayer::playSinelon(struct CRGB *ledsArray, int nLedsToPlay)
+{
+  // a colored dot sweeping back and forth, with fading trails
+  fadeToBlackBy( ledsArray, nLedsToPlay, 20);
+  int pos = beatsin16(13,0,nLedsToPlay);
+  ledsArray[pos] += CHSV( gHue, 255, 192);
+}
+
+void SingleStripeAnimationPlayer::bpm(struct CRGB *ledsArray, int nLedsToPlay)
+{
+  // colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+  uint8_t BeatsPerMinute = 62;
+  CRGBPalette16 palette = PartyColors_p;
+  uint8_t beat = beatsin8( BeatsPerMinute, 64, 255);
+  for( int i = 0; i < nLedsToPlay; i++) { //9948
+	  ledsArray[i] = ColorFromPalette(palette, gHue+(i*2), beat-gHue+(i*10));
+  }
+}
+
+void SingleStripeAnimationPlayer::juggle(struct CRGB *ledsArray, int nLedsToPlay) {
+  // eight colored dots, weaving in and out of sync with each other
+  fadeToBlackBy( ledsArray, nLedsToPlay, 20);
+  byte dothue = 0;
+  for( int i = 0; i < 8; i++) {
+	  ledsArray[beatsin16(i+7,0,nLedsToPlay)] |= CHSV(dothue, 200, 255);
+    dothue += 32;
+  }
+}
+
+void SingleStripeAnimationPlayer::addGlitter(struct CRGB *ledsArray, int nLedsToPlay, fract8 chanceOfGlitter)
+{
+  if( random8() < chanceOfGlitter) {
+	  ledsArray[ random16(nLedsToPlay) ] += CRGB::White;
+	}
+}

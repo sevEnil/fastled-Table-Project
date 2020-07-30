@@ -1,0 +1,29 @@
+/*
+ * SingleStripeAnimationPlayer.h
+ *
+ *  Created on: 22.02.2017
+ *      Author: sleipnir
+ */
+#include<FastLED.h>
+
+#ifndef SINGLESTRIPEANIMATIONPLAYER_H_
+#define SINGLESTRIPEANIMATIONPLAYER_H_
+
+class SingleStripeAnimationPlayer {
+public:
+	SingleStripeAnimationPlayer();
+	virtual ~SingleStripeAnimationPlayer();
+	void update();
+	void playConfetti(struct CRGB *ledsArray, int nLedsToPlay);
+	void octoWS2811StripTesterRainbow(struct CRGB *ledsArray, int numStrips, int numLedsPerStrip);
+	void playRainbow(struct CRGB *ledsArray, int nLedsToPlay);
+	void playRainbowWithGlitter(struct CRGB *ledsArray, int nLedsToPlay);
+	void playSinelon(struct CRGB *ledsArray, int nLedsToPlay);
+	void bpm(struct CRGB *ledsArray, int nLedsToPlay);
+	void juggle(struct CRGB *ledsArray, int nLedsToPlay);
+private:
+	uint8_t gHue = 0;
+	void addGlitter( struct CRGB *ledsArray, int nLedsToPlay,fract8 chanceOfGlitter);
+};
+
+#endif /* SINGLESTRIPEANIMATIONPLAYER_H_ */

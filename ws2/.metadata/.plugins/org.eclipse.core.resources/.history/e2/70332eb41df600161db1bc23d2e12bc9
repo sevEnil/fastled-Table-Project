@@ -1,0 +1,155 @@
+#define USE_OCTOWS2811
+#include "Table.h"
+#include<OctoWS2811.h>
+#include<FastLED.h>
+
+#define NUM_LEDS_PER_STRIP 164
+#define NUM_STRIPS 8
+int numOfTopLeds= 168;
+int numOfFrontLeds= 0;
+int numOfLeftLeds= 0;
+int numOfRightLeds= 0;
+int numOfBackLeds= 0;
+int numOfFeetLeds= 7;
+
+const int maxBrightness=150;
+int currentBrigthness =130;
+Table table = Table();
+
+//TODO need to check the pins in reality. these are just some random numbers.
+//pin 18 is the airpump
+int buttonMutePumpPin = 23;
+int buttonBrightnessPin = 19;
+int buttonNextAnimationPin =20;
+int buttonUnknownsPin=21;
+bool isButtonTogglePumpPressed =false;
+bool isButtonBrightnessPressed=false;
+bool isButtonNextAnimationPressed=false;
+bool isButtonUnknownPressed=false;
+
+
+
+
+CRGB leds[NUM_STRIPS * NUM_LEDS_PER_STRIP];
+
+Table::Table() {
+	// TODO Auto-generated constructor stub
+
+
+
+}
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+
+void setup() {
+LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+  //LEDS.addLeds(leds, 164);
+  LEDS.setBrightness(currentBrigthness);
+  FastLED.setBrightness(currentBrigthness);
+  pinMode(buttonMutePumpPin, INPUT);
+  pinMode(buttonBrightnessPin, INPUT);
+  pinMode(buttonNextAnimationPin, INPUT);
+  pinMode(buttonUnknownsPin, INPUT);
+
+
+}
+
+
+void Table::updateButtonStates(){
+	isButtonTogglePumpPressed=0;
+	bool isButtonTogglePumpPressed =digitalReadFast(buttonMutePumpPin);
+	bool isButtonBrightnessPressed=digitalRead(buttonBrightnessPin);
+	isButtonNextAnimationPressed=digitalRead(buttonNextAnimationPin);
+	isButtonUnknownPressed=digitalRead(buttonUnknownsPin);
+	if(isButtonTogglePumpPressed== HIGH){
+		//table.airpump.toogleAirpumpState();
+		Serial.println(isButtonTogglePumpPressed);
+
+	}
+	if(isButtonBrightnessPressed){
+		currentBrigthness = currentBrigthness + 15;
+		if(currentBrigthness > maxBrightness){
+			currentBrigthness =10;
+			 LEDS.setBrightness(currentBrigthness);
+			 FastLED.setBrightness(currentBrigthness);
+		}
+	}
+
+}
+
+void someAnymation() {
+	static uint8_t hue = 0;
+	for (int i = 0; i < NUM_STRIPS; i++) {
+		for (int j = 0; j < NUM_LEDS_PER_STRIP; j++) {
+			leds[(i * NUM_LEDS_PER_STRIP) + j] = CHSV((32 * i) + hue + j, 192,
+					255);
+		}
+	}
+	// Set the first n leds on each strip to show which strip it is
+	for (int i = 0; i < NUM_STRIPS; i++) {
+		for (int j = 0; j <= i; j++) {
+			leds[(i * NUM_LEDS_PER_STRIP) + j] = CRGB::Red;
+		}
+	}
+	hue++;
+}
+
+void Fire2012()
+{
+	int numLeds = 160;
+// Array of temperature readings at each simulation cell
+  static byte heat[160];
+  // COOLING: How much does the air cool as it rises?
+  // Less cooling = taller flames.  More cooling = shorter flames.
+  // Default 50, suggested range 20-100
+  #define COOLING  55
+  bool gReverseDirection = false;
+  // SPARKING: What chance (out of 255) is there that a new spark will be lit?
+  // Higher chance = more roaring fire.  Lower chance = more flickery fire.
+  // Default 120, suggested range 50-200.
+  #define SPARKING 120
+
+  // Step 1.  Cool down every cell a little
+    for( int i = 0; i < numLeds; i++) {
+      heat[i] = qsub8( heat[i],  random8(0, ((COOLING * 10) / numLeds) + 2));
+    }
+
+    // Step 2.  Heat from each cell drifts 'up' and diffuses a little
+    for( int k= numLeds - 1; k >= 2; k--) {
+      heat[k] = (heat[k - 1] + heat[k - 2] + heat[k - 2] ) / 3;
+    }
+
+    // Step 3.  Randomly ignite new 'sparks' of heat near the bottom
+    if( random8() < SPARKING ) {
+      int y = random8(7);
+      heat[y] = qadd8( heat[y], random8(160,255) );
+    }
+
+    // Step 4.  Map from heat cells to LED colors
+    for( int j = 0; j < numLeds; j++) {
+      CRGB color = HeatColor( heat[j]);
+      int pixelnumber;
+      if( gReverseDirection ) {
+        pixelnumber = (numLeds-1) - j;
+      } else {
+        pixelnumber = j;
+      }
+      leds[pixelnumber] = color;
+    }
+}
+
+void loop() {
+	//pinMode(18, OUTPUT);
+//table.airpump.toogleAirpumpState();
+  someAnymation();
+	//Fire2012();
+  LEDS.show();
+  LEDS.delay(10);
+  table.updateButtonStates();
+}
+
+
+
+
+

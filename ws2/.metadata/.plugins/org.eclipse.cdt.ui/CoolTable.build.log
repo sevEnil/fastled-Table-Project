@@ -1,0 +1,32 @@
+21:54:02 **** Incremental Build of configuration Release for project CoolTable ****
+"E:\\ide\\sloeber2\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building target: CoolTable'
+'Printing size:'
+"E:/ide/Teensyduino/arduino-1.8.1/hardware/teensy/../tools/arm/bin/arm-none-eabi-size" -A "E:/ws2/CoolTable/Release/CoolTable.elf"
+E:/ws2/CoolTable/Release/CoolTable.elf  :
+section                 size        addr
+.text                  35560           0
+.fini                      4       35560
+.usbdescriptortable      160   536838144
+.dmabuffers              512   536838656
+.usbbuffers              864   536839168
+.data                   2300   536840032
+.bss                    6080   536842332
+.ARM.attributes           42           0
+.comment                 112           0
+.debug_info           259687           0
+.debug_abbrev          33198           0
+.debug_loc             95465           0
+.debug_aranges          4760           0
+.debug_ranges           6920           0
+.debug_line            39419           0
+.debug_str             46528           0
+.debug_frame           13428           0
+Total                 545039
+
+
+'Finished building target: CoolTable'
+' '
+
+21:54:03 Build Finished (took 1s.880ms)
+

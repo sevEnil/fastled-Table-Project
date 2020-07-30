@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<item value="334" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_x"/>
+	<item value="true" key="LexicalSortingAction.sort"/>
+	<item value="5" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.last_focus"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_y"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_page.white_space_tab_page.node"/>
+	<item value="1117" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_width"/>
+	<item value="875" key="org.eclipse.cdt.uiformatter_pagemodify_dialog.preferred_height"/>
+	<item value="0" key="org.eclipse.cdt.uiformatter_page.white_space.c_view.inner"/>
+	<item value="0" key="formatter_page.modify_dialog_tab_page.last_focus_index"/>
+	<item value="1" key="org.eclipse.cdt.uiformatter_page.line_wrapping_tab_page.last_category_index"/>
+	<section name="org.eclipse.cdt.ui.OPEN_ACTION_SELECTION_DIALOG_SECTION">
+		<item value="709" key="DIALOG_WIDTH"/>
+		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
+		<item value="437" key="DIALOG_HEIGHT"/>
+		<item value="1085" key="DIALOG_X_ORIGIN"/>
+		<item value="210" key="DIALOG_Y_ORIGIN"/>
+	</section>
+	<section name="RefactoringWizard.preview">
+		<item value="600" key="width"/>
+		<item value="400" key="height"/>
+	</section>
+	<section name="org.eclipse.cdt.internal.ui.browser.opentype.OpenTypeActionSettings">
+		<item value="true" key="show_enums"/>
+		<item value="true" key="show_unions"/>
+		<item value="true" key="show_macros"/>
+		<item value="true" key="show_classes"/>
+		<item value="true" key="show_functions"/>
+		<item value="true" key="show_lowlevel"/>
+		<item value="true" key="show_namespaces"/>
+		<item value="true" key="show_enumerators"/>
+		<item value="true" key="show_structs"/>
+		<item value="678" key="x"/>
+		<item value="565" key="width"/>
+		<item value="67" key="y"/>
+		<item value="true" key="show_typedefs"/>
+		<item value="true" key="show_variables"/>
+		<item value="680" key="height"/>
+	</section>
+	<section name="org.eclipse.cdt.ui.text.hover.CMacroExpansionExploration.internal">
+		<item value="180" key="size.height"/>
+		<item value="465" key="size.width"/>
+	</section>
+	<section name="org.eclipse.cdt.ui.text.hover.CMacroExpansionExploration">
+	</section>
+	<section name="NewClassWizardPage">
+		<item value="true" key="stubSelected1"/>
+		<item value="true" key="stubVirtual1"/>
+		<item value="true" key="namespaceSelected"/>
+		<item value="false" key="stubInline0"/>
+		<item value="false" key="stubInline1"/>
+		<item value="Animator" key="namespace"/>
+		<item value="false" key="testFileSelected"/>
+		<item value="true" key="stubSelected0"/>
+	</section>
+	<section name="RenameInformationPopup">
+	</section>
+	<section name="CRenameRefactoringInputPage">
+	</section>
+	<section name="ExtractFunctionWizard">
+		<item value="private" key="AccessModifier"/>
+	</section>
+	<section name="completion_proposal_size">
+		<item value="254" key="size.y"/>
+		<item value="355" key="size.x"/>
+	</section>
+</section>

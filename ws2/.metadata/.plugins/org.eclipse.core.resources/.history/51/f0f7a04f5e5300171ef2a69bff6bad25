@@ -1,0 +1,580 @@
+// Do not remove the include below
+#define USE_OCTOWS2811
+#include "CoolTable.h"
+
+const int maxBrightness = 150;
+int currentBrigthness = 30;
+Table table = Table();
+
+void setup() {
+	//delay(3000);   // If things go bad, you can shutdown before the LED's start drawing power.
+	LEDS.addLeds<OCTOWS2811>(table.ledArray, NUM_LEDS_PER_STRIP);
+	LEDS.setBrightness(currentBrigthness);
+	FastLED.setBrightness(currentBrigthness);
+	Serial.begin(9600);
+}
+
+void loop() {
+
+	table.update();
+	LEDS.show();
+	//Serial.println(LEDS.getFPS());}
+}
+
+Table::Table() {
+	pinMode(buttonMutePumpPin, INPUT_PULLUP);
+	pinMode(buttonBrightnessPin, INPUT_PULLUP);
+	pinMode(buttonNextAnimationPin, INPUT_PULLUP);
+	pinMode(buttonUnknownsPin, INPUT_PULLUP);
+	pinMode(micPin, INPUT);
+	topLeds = LedPart(table.getTopLedsArray(), table.numOfTopLeds);
+	frontLeds = LedPart(table.getFrontLedsArray(), table.numOfFrontLeds);
+	leftLeds = LedPart(table.getLeftLedsArray(), table.numOfLeftLeds);
+	rightLeds = LedPart(table.getRightLedsArray(), table.numOfRightLeds);
+	backLeds = LedPart(table.getBackLedsArray(), table.numOfBackLeds);
+	feetLeds = LedPart(table.getFeetLedsArray(), table.numOfFeetLeds);
+	animator.setPlayer(player);
+	animator.settopLeds(topLeds);
+	animator.setfrontLeds(frontLeds);
+	animator.setleftLeds(leftLeds);
+	animator.setrightLeds(rightLeds);
+	animator.setbackLeds(backLeds);
+	animator.setfeetLeds(feetLeds);
+	animator.setAirpump(airpump);
+
+}
+
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+
+void Table::update() {
+	updateButtonStates();
+	int val = digitalRead(micPin);
+	 if(val > 600) //if the value is greater than 600
+	  {
+	Serial.println(val);
+	  }
+	EVERY_N_MILLIS(topLeds.delay)
+	{
+		playAnimation();
+		player.update();
+		animator.update();
+	}
+
+}
+
+void Table::updateButtonStates() {
+
+	switch (checkButtonState2(buttonUnknowns)) {
+	case 0:
+		break;
+	case 1:
+		Serial.println("COLLOR knopf gedrückt. kurz");
+		Serial.println("colorindex wird erhöht. neu:");
+		colorIndex++;
+		if (colorIndex > 7) {
+			colorIndex = 0;
+		}
+		Serial.print(colorIndex);
+		setColorforAllParts();
+
+	case 2: //Longklick means  ?
+		Serial.println("Color knopf gedrückt. erhöhe farbe für alle teile");
+		increaseColorForAllParts();
+		break;
+	}
+
+	switch (checkButtonState(buttonMutePump)) {
+	case 0:
+		break;
+	case 1: // shortclick means toogle aripump
+		Serial.println("Mute Pump knopf gedrückt. short");
+		EVERY_N_SECONDS(3)
+		{
+			airpump.toogleAirpumpState();
+		}
+		break;
+	case 2: //Longklick means  ?
+		Serial.println("Mute Pump knopf gedrückt. lang");
+		break;
+
+	}
+
+	switch (checkButtonState(buttonBrightness)) {
+	case 0:
+		break;
+	case 1: // shortclick means change the brightness
+		Serial.println("buttonBrightness gedrückt. kurz");
+		Serial.println("current Brigthness setted to:");
+		currentBrigthness = currentBrigthness + 30;
+		if (currentBrigthness > maxBrightness) {
+			currentBrigthness = 30;
+		}
+		Serial.print(currentBrigthness);
+		LEDS.setBrightness(currentBrigthness);
+		FastLED.setBrightness(currentBrigthness);
+		break;
+	case 2:
+		Serial.println("ajust speed");
+		increaseDelayForAllParts();
+		break;
+	}
+
+	switch (checkButtonState(buttonNextAnimation)) {
+	case 0:
+		break;
+	case 1: // shortclick means change to next animation
+		animationMode++;
+		initializePartsForAnimation();
+		Serial.println("Next knopf kurz . animation:");
+		Serial.print(animationMode);
+		break;
+	case 2: //Longklick means  change to previous animation
+		animationMode--;
+		Serial.println("Zurück knopf. lang animation:");
+		Serial.print(animationMode);
+		break;
+	}
+}
+
+//check if there is a short press or a long press and does just one operation for long and short
+int Table::checkButtonState(Bounce &button) {
+	if (button.update()) {
+		if (button.fallingEdge()) {
+			Serial.println("falling edge");
+			buttonTimePressed = millis();
+		} else if (button.risingEdge()) {
+			if (buttonTimePressed != 0) {
+				unsigned long deltaTime = millis() - buttonTimePressed;
+				buttonTimePressed = 0;
+				Serial.println("rising edge");
+				if (deltaTime < 500) {
+					// do short time stuff
+					Serial.println("short");
+					return 1;
+				} else {
+					// do long time stuff
+					Serial.println("long");
+					return 2;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+int Table::checkButtonState2(Bounce &button) {
+	button.update();
+	if (button.fallingEdge()) {
+		Serial.println("falling edge");
+		buttonTimePressed = millis();
+	} else if (buttonTimePressed && !button.read()) {
+		if (buttonTimePressed != 0) {
+			unsigned long deltaTime = millis() - buttonTimePressed;
+			if (deltaTime > 500) {
+				return 2; // its a longtime press
+			}
+		}
+	} else if (button.risingEdge()) {
+		unsigned long deltaTime = millis() - buttonTimePressed;
+		if (deltaTime < 500) {
+			return 1; //its a shorttime press
+		}
+		buttonTimePressed = 0;
+	}
+	return 0;
+}
+
+void Table::increaseDelayForAllParts() {
+	EVERY_N_MILLIS(10)
+	{
+		topLeds.delay += 10;
+		if (topLeds.delay > 200) {
+			topLeds.delay = 0;
+		}
+		Serial.println("delay setted:");
+		Serial.print(topLeds.delay);
+		frontLeds.delay = topLeds.delay;
+		leftLeds.delay = topLeds.delay;
+		rightLeds.delay = topLeds.delay;
+		backLeds.delay = topLeds.delay;
+		feetLeds.delay = topLeds.delay;
+
+	}
+
+}
+
+void Table::increaseColorForAllParts() {
+	EVERY_N_MILLISECONDS(10)
+	{
+		setColorForLedPart(topLeds.firstHue + 1, topLeds.secondHue + 1, topLeds);
+		setColorForLedPart(frontLeds.firstHue + 1, frontLeds.secondHue + 1, frontLeds);
+		setColorForLedPart(leftLeds.firstHue + 1, leftLeds.secondHue + 1, leftLeds);
+		setColorForLedPart(rightLeds.firstHue + 1, rightLeds.secondHue + 1, rightLeds);
+		setColorForLedPart(backLeds.firstHue + 1, backLeds.secondHue + 1, backLeds);
+		setColorForLedPart(feetLeds.firstHue + 1, feetLeds.secondHue + 1, feetLeds);
+	}
+}
+
+void Table::setColorforAllParts() {
+
+	switch (colorIndex) {
+	case 0:
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, topLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, frontLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, leftLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, rightLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, backLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, feetLeds);
+	case 1:
+		setColorForLedPart(HUE_BLUE, HUE_RED, topLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, frontLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, leftLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, rightLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, backLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, feetLeds);
+		break;
+	case 2:
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, topLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, frontLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, leftLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, rightLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, backLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, feetLeds);
+		break;
+	case 3:
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, topLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, frontLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, leftLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, rightLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, backLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, feetLeds);
+		break;
+	case 4:
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, topLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, frontLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, leftLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, rightLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, backLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, feetLeds);
+		break;
+	case 5:
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, topLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, frontLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, leftLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, rightLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, backLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, feetLeds);
+		break;
+	case 6:
+		setColorForLedPart(HUE_RED, HUE_PINK, topLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, frontLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, leftLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, rightLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, backLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, feetLeds);
+		break;
+	case 7:
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, topLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, frontLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, leftLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, rightLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, backLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, feetLeds);
+		break;
+	}
+}
+
+void Table::setColorForLedPart(uint8_t hue1, uint8_t hue2, LedPart &part) {
+	part.firstHue = hue1;
+	part.secondHue = hue2;
+
+}
+
+void Table::initializePartsForAnimation() {
+	switch (animationMode) {
+	case 10:
+		backLeds.loopIndex = 0;
+		backLeds.firstHue = HUE_RED;
+		backLeds.secondHue = HUE_BLUE;
+		backLeds.directionReverse = false;
+		leftLeds.loopIndex = 0;
+		leftLeds.firstHue = HUE_RED;
+		leftLeds.secondHue = HUE_BLUE;
+		leftLeds.directionReverse = false;
+		topLeds.loopIndex = 0;
+		topLeds.firstHue = HUE_RED;
+		topLeds.secondHue = HUE_BLUE;
+		topLeds.directionReverse = false;
+		rightLeds.loopIndex = 0;
+		rightLeds.firstHue = HUE_RED;
+		rightLeds.secondHue = HUE_BLUE;
+		rightLeds.directionReverse = false;
+		frontLeds.loopIndex = 0;
+		frontLeds.firstHue = HUE_RED;
+		frontLeds.secondHue = HUE_BLUE;
+		frontLeds.directionReverse = false;
+		break;
+	}
+
+}
+
+struct CRGB * Table::getTopLedsArray() {
+	return getLedsForStripe(stripeNumTopLeds, numOfTopLeds);
+
+}
+struct CRGB * Table::getFrontLedsArray() {
+	return getLedsForStripe(stripeNumFrontLeds, numOfFrontLeds);
+
+}
+struct CRGB * Table::getLeftLedsArray() {
+	return getLedsForStripe(stripeNumleftLeds, numOfLeftLeds);
+
+}
+struct CRGB * Table::getRightLedsArray() {
+	return getLedsForStripe(stripeNumRightLeds, numOfRightLeds);
+
+}
+struct CRGB * Table::getBackLedsArray() {
+	return getLedsForStripe(stripeNumBackLeds, numOfBackLeds);
+
+}
+struct CRGB * Table::getFeetLedsArray() {
+	return getLedsForStripe(stripeNumFeetLeds, numOfFeetLeds);
+
+}
+
+struct CRGB * Table::getLedsForStripe(int nStripe, int nlength) {
+	int startpoint = 0;
+	for (int var = 1; var < nStripe; ++var) {
+		startpoint = startpoint + NUM_LEDS_PER_STRIP;
+	}
+	return ledArray(startpoint, nlength);
+
+}
+
+void Table::playAnimation() {
+	if (animationMode > 27) {
+		animationMode = 0;
+	}
+	if (animationMode < 0) {
+		animationMode = 27;
+	}
+	//animationMode=-1;
+	switch (animationMode) {
+	case -1:
+		//	player.octoWS2811StripTesterRainbow(table.ledArray, NUM_STRIPS,
+		//	NUM_LEDS_PER_STRIP);
+
+		break;
+	case 0:
+		animator.startupAnimation();
+		break;
+	case 1:
+		player.playBlack(feetLeds);
+		player.play_one_color_allHSV(backLeds, topLeds.firstHue);
+		player.play_one_color_allHSV(leftLeds, leftLeds.firstHue);
+		player.play_one_color_allHSV(rightLeds, leftLeds.firstHue);
+		player.play_one_color_allHSV(frontLeds, leftLeds.firstHue);
+		player.play_one_color_allHSV(topLeds, leftLeds.firstHue);
+		break;
+	case 2:
+		player.playBlack(feetLeds);
+		player.playRainbowWithGlitter(topLeds);
+		player.playRainbowWithGlitter(leftLeds);
+		player.playRainbowWithGlitter(rightLeds);
+		player.playRainbowWithGlitter(frontLeds);
+		player.playRainbowWithGlitter(backLeds);
+		break;
+	case 3:
+		player.playBlack(feetLeds);
+		player.playRainbow(topLeds);
+		player.playRainbow(leftLeds);
+		player.playRainbow(rightLeds);
+		player.playRainbow(frontLeds);
+		player.playRainbow(backLeds);
+		break;
+	case 4:
+		player.playbpm(topLeds);
+		player.playbpm(leftLeds);
+		player.playbpm(rightLeds);
+		player.playbpm(frontLeds);
+		player.playbpm(backLeds);
+		break;
+	case 5:
+		player.playColor_bounce(topLeds);
+		player.playColor_bounce(leftLeds);
+		player.playColor_bounce(rightLeds);
+		player.playColor_bounce(frontLeds);
+		player.playColor_bounce(backLeds);
+		break;
+	case 6:
+		player.color_bounceFADE(topLeds);
+		player.color_bounceFADE(leftLeds);
+		player.color_bounceFADE(rightLeds);
+		player.color_bounceFADE(frontLeds);
+		player.color_bounceFADE(backLeds);
+		break;
+	case 7:
+		player.color_loop_vardelay(topLeds);
+		player.color_loop_vardelay(leftLeds);
+		player.color_loop_vardelay(rightLeds);
+		player.color_loop_vardelay(frontLeds);
+		player.color_loop_vardelay(backLeds);
+		break;
+	case 8:
+		player.ems_lightsALL(topLeds);
+		player.ems_lightsALL(leftLeds);
+		player.ems_lightsALL(rightLeds);
+		player.ems_lightsALL(frontLeds);
+		player.ems_lightsALL(backLeds);
+		break;
+	case 9:
+		player.ems_lightsONE(topLeds);
+		player.ems_lightsONE(leftLeds);
+		player.ems_lightsONE(rightLeds);
+		player.ems_lightsONE(frontLeds);
+		player.ems_lightsONE(backLeds);
+		break;
+	case 10:
+		player.playems_lightsSTROBE(backLeds);
+		player.playems_lightsSTROBE(leftLeds);
+		player.playems_lightsSTROBE(rightLeds);
+		player.playems_lightsSTROBE(frontLeds);
+		player.playems_lightsSTROBE(topLeds);
+		delay(20);
+		break;
+	case 11:
+		player.fade_vertical(backLeds);
+		player.fade_vertical(leftLeds);
+		player.fade_vertical(rightLeds);
+		player.fade_vertical(frontLeds);
+		player.fade_vertical(topLeds);
+		break;
+	case 12:
+		player.playflicker(backLeds);
+		player.playflicker(leftLeds);
+		player.playflicker(rightLeds);
+		player.playflicker(frontLeds);
+		player.playflicker(topLeds);
+		break;
+	case 13:
+		player.playBlack(topLeds);
+		player.playBlack(backLeds);
+		player.playBlack(leftLeds);
+		player.playBlack(rightLeds);
+		player.playkitt(frontLeds);
+		break;
+
+	case 14:
+		player.matrix(backLeds);
+		player.matrix(leftLeds);
+		player.matrix(rightLeds);
+		player.matrix(frontLeds);
+		player.matrix(topLeds);
+		break;
+	case 15:
+		player.pop_horizontal(backLeds);
+		player.pop_horizontal(leftLeds);
+		player.pop_horizontal(rightLeds);
+		player.pop_horizontal(frontLeds);
+		player.pop_horizontal(topLeds);
+		break;
+	case 16:
+		player.pulse_one_color_all(backLeds);
+		player.pulse_one_color_all(leftLeds);
+		player.pulse_one_color_all(rightLeds);
+		player.pulse_one_color_all(frontLeds);
+		player.pulse_one_color_all(topLeds);
+		break;
+	case 17:
+		player.pulse_one_color_all_rev(backLeds);
+		player.pulse_one_color_all_rev(frontLeds);
+		player.pulse_one_color_all_rev(leftLeds);
+		player.pulse_one_color_all_rev(rightLeds);
+		player.pulse_one_color_all_rev(topLeds);
+		break;
+	case 18:
+		player.fill_quad_bright_curve(backLeds);
+		player.fill_quad_bright_curve(frontLeds);
+		player.fill_quad_bright_curve(leftLeds);
+		player.fill_quad_bright_curve(rightLeds);
+		player.fill_quad_bright_curve(topLeds);
+		break;
+	case 19:
+		player.rainbow_loop(topLeds);
+		player.rainbow_loop(frontLeds);
+		player.rainbow_loop(leftLeds);
+		player.rainbow_loop(rightLeds);
+		player.rainbow_loop(backLeds);
+		break;
+	case 20:
+		player.playrandom_burst(topLeds);
+		player.playrandom_burst(frontLeds);
+		player.playrandom_burst(leftLeds);
+		player.playrandom_burst(rightLeds);
+		player.playrandom_burst(backLeds);
+		break;
+	case 21:
+		player.playrandom_color_pop(topLeds);
+		player.playrandom_color_pop(frontLeds);
+		player.playrandom_color_pop(leftLeds);
+		player.playrandom_color_pop(rightLeds);
+		player.playrandom_color_pop(backLeds);
+		break;
+	case 22:
+		player.random_red(topLeds);
+		player.random_red(frontLeds);
+		player.random_red(leftLeds);
+		player.random_red(rightLeds);
+		player.random_red(backLeds);
+		break;
+	case 23:
+		player.rule30(topLeds);
+		player.rule30(frontLeds);
+		player.rule30(leftLeds);
+		player.rule30(rightLeds);
+		player.rule30(backLeds);
+		break;
+	case 24:
+		player.rwb_march(topLeds);
+		player.rwb_march(frontLeds);
+		player.rwb_march(leftLeds);
+		player.rwb_march(rightLeds);
+		player.rwb_march(backLeds);
+		break;
+	case 25:
+		player.playConfetti(topLeds);
+		player.playConfetti(frontLeds);
+		player.playConfetti(leftLeds);
+		player.playConfetti(rightLeds);
+		player.playConfetti(backLeds);
+		break;
+	case 26:
+		player.playJuggle(topLeds);
+		player.playJuggle(frontLeds);
+		player.playJuggle(leftLeds);
+		player.playJuggle(rightLeds);
+		player.playJuggle(backLeds);
+		break;
+	case 27:
+		break;
+	case 28:
+		break;
+	case 29:
+		break;
+	case 30:
+
+		break;
+	case 32:
+		break;
+	case 33:
+		player.playJuggle(backLeds);
+		break;
+	case 34:
+		break;
+	case 35:
+		break;
+	}
+}

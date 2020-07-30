@@ -1,0 +1,38 @@
+#include "Airpump.h"
+#include<OctoWS2811.h>
+#include<FastLED.h>
+#include <Bounce.h>
+
+#ifndef TABLE_H_
+#define TABLE_H_
+#define NUM_LEDS_PER_STRIP 170
+#define NUM_STRIPS 8
+
+class Table {
+public:
+	Table();
+	virtual ~Table();
+	void updateButtonStates();
+	Airpump airpump = Airpump();
+	CRGBArray<NUM_STRIPS * NUM_LEDS_PER_STRIP> ledArray;
+private:
+	int buttonMutePumpPin = 23;
+	int buttonBrightnessPin = 19;
+	int buttonNextAnimationPin =20;
+	int buttonUnknownsPin=21;
+	int numOfTopLeds= 168;
+	int numOfFrontLeds= 70;
+	int numOfLeftLeds= 70;
+	int numOfRightLeds= 70;
+	int numOfBackLeds= 70;
+	int numOfFeetLeds= 7;
+	bool isButtonNextAnimationPressed=false;
+	bool isButtonUnknownPressed=false;
+	Bounce buttonMutePump = Bounce(buttonMutePumpPin, 10);// 10 ms debounce
+	Bounce buttonBrightness = Bounce(buttonBrightnessPin, 10);
+	Bounce buttonNextAnimation = Bounce(buttonNextAnimationPin, 10);
+	Bounce buttonUnknowns = Bounce(buttonUnknownsPin, 10);
+	struct CRGB getTopLedsArray();
+
+};
+#endif /* TABLE_H_ */

@@ -1,0 +1,38 @@
+/*
+ * Table.cpp
+ *
+ *  Created on: 01.01.2017
+ *      Author: sleipnir
+ */
+
+#include "Table.h"
+#include "Airpump.h"
+#include<FastLED.h>
+#include<OctoWS2811.h>
+
+
+int numOfTopLeds= 168;
+int numOfFrontLeds= 0;
+int numOfLeftLeds= 0;
+int numOfRightLeds= 0;
+int numOfBackLeds= 0;
+int numOfFeetLeds= 7;
+Airpump airpump = Airpump();
+
+#define NUM_LEDS_PER_STRIP 164
+#define NUM_STRIPS 8
+
+CRGB leds[NUM_STRIPS * NUM_LEDS_PER_STRIP];
+
+Table::Table() {
+	// TODO Auto-generated constructor stub
+	airpump.toogleAirpumpState();
+	  LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+	  LEDS.setBrightness(128);
+
+}
+
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+

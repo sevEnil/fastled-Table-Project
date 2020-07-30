@@ -1,0 +1,771 @@
+/*
+ * SingleStripeAnimationPlayer.cpp
+ *
+ *  Created on: 22.02.2017
+ *      Author: sleipnir
+ */
+
+#include "SingleStripeAnimationPlayer.h"
+
+SingleStripeAnimationPlayer::SingleStripeAnimationPlayer() {
+	// TODO Auto-generated constructor stub
+
+}
+
+SingleStripeAnimationPlayer::~SingleStripeAnimationPlayer() {
+	// TODO Auto-generated destructor stub
+}
+
+void SingleStripeAnimationPlayer::update() {
+}
+
+void SingleStripeAnimationPlayer::playConfetti(LedPart *part) {
+	fadeToBlackBy(part->getLedArray(), part->getnumOfLeds(), 10);
+	int pos = random16(part->getnumOfLeds());
+	part->getLedArray()[pos] += CHSV(part->Hue + random8(64), 200, 255);
+}
+
+//*this method shows n static red dots to indicate which ledstrip its wired to.
+void SingleStripeAnimationPlayer::octoWS2811StripTesterRainbow(struct CRGB *ledsArray, int numStrips,
+		int numLedsPerStrip) {
+	static uint8_t hue = 0;
+	for (int i = 0; i < numStrips; i++) {
+		for (int j = 0; j < numLedsPerStrip; j++) {
+			ledsArray[(i * numLedsPerStrip) + j] = CHSV((32 * i) + hue + j, 192, 255);
+		}
+	}
+	// Set the first n leds on each strip to show which strip it is
+	for (int i = 0; i < numStrips; i++) {
+		for (int j = 0; j <= i; j++) {
+			ledsArray[(i * numLedsPerStrip) + j] = CRGB::Red;
+		}
+	}
+	hue++;
+}
+
+void SingleStripeAnimationPlayer::playRainbow(LedPart *part) {
+	// FastLED's built-in rainbow generator
+	fill_rainbow(part->getLedArray(), part->getnumOfLeds(), part->firstHue, 7);
+}
+
+void SingleStripeAnimationPlayer::playRainbowWithGlitter(LedPart *part) {
+	// built-in FastLED rainbow, plus some random sparkly glitter
+	playRainbow(part);
+	addGlitter(part, 80);
+}
+
+void SingleStripeAnimationPlayer::playSinelon(LedPart *part) {
+	// a colored dot sweeping back and forth, with fading trails
+	fadeToBlackBy(part->getLedArray(), part->getnumOfLeds(), 20);
+	int pos = beatsin16(13, 0, part->getnumOfLeds());
+	part->getLedArray()[pos] += CHSV(part->firstHue, part->saturation, part->brightness);
+}
+
+void SingleStripeAnimationPlayer::playbpm(LedPart *part) {
+	// colored stripes pulsing at a defined Beats-Per-Minute (BPM)
+	uint8_t BeatsPerMinute = 62;
+	CRGBPalette16 palette = PartyColors_p;
+	uint8_t beat = beatsin8(BeatsPerMinute, 64, 255);
+	for (int i = 0; i < part->getnumOfLeds(); i++) { //9948
+		part->getLedArray()[i] = ColorFromPalette(palette, part->firstHue + (i * 2), beat - part->firstHue + (i * 10));
+	}
+}
+
+void SingleStripeAnimationPlayer::playJuggle(LedPart *part) {
+	// eight colored dots, weaving in and out of sync with each other
+	fadeToBlackBy(part->getLedArray(), part->getnumOfLeds(), 20);
+	byte dothue = 0;
+	for (int i = 0; i < 8; i++) {
+		part->getLedArray()[beatsin16(i + 7, 0, part->getnumOfLeds())] |= CHSV(dothue, 200, 255);
+		dothue += 32;
+	}
+}
+
+//------------------------------------- UTILITY FXNS --------------------------------------
+//---SET THE COLOR OF A SINGLE RGB LED
+
+void SingleStripeAnimationPlayer::set_color_led(LedPart *part, int adex, int cred, int cgrn, int cblu) {
+	part->getLedArray()[adex].setRGB(cred, cgrn, cblu);
+}
+
+void SingleStripeAnimationPlayer::SingleStripeAnimationPlayer::addGlitter(LedPart *part, fract8 chanceOfGlitter) {
+	if (random8() < chanceOfGlitter) {
+		part->getLedArray()[random16(part->getnumOfLeds())] += CRGB::White;
+	}
+}
+//---FIND INDEX OF HORIZONAL OPPOSITE LED
+int SingleStripeAnimationPlayer::horizontal_index(LedPart *part, int i) {
+	//-ONLY WORKS WITH INDEX < TOPINDEX
+	if (i == 0) {
+		return 0;
+	}
+	if (i == part->TOP_INDEX && part->EVENODD == 1) {
+		return part->TOP_INDEX + 1;
+	}
+	if (i == part->TOP_INDEX && part->EVENODD == 0) {
+		return part->TOP_INDEX;
+	}
+	return part->getnumOfLeds() - i;
+}
+
+//---FIND INDEX OF ANTIPODAL OPPOSITE LED
+int SingleStripeAnimationPlayer::antipodal_index(LedPart *part, int i) {
+	int iN = i + part->TOP_INDEX;
+	if (i >= part->TOP_INDEX) {
+		iN = (i + part->TOP_INDEX) % part->getnumOfLeds();
+	}
+	return iN;
+}
+
+//---FIND ADJACENT INDEX CLOCKWISE
+int SingleStripeAnimationPlayer::adjacent_cw(LedPart *part, int i) {
+	int r;
+	if (i < part->getnumOfLeds() - 1) {
+		r = i + 1;
+	} else {
+		r = 0;
+	}
+	return r;
+}
+
+//---FIND ADJACENT INDEX COUNTER-CLOCKWISE
+int SingleStripeAnimationPlayer::adjacent_ccw(LedPart *part, int i) {
+	int r;
+	if (i > 0) {
+		r = i - 1;
+	} else {
+		r = part->getnumOfLeds() - 1;
+	}
+	return r;
+}
+
+void SingleStripeAnimationPlayer::random_red(LedPart *part) {    //QUICK 'N DIRTY RANDOMIZE TO GET CELL AUTOMATA STARTED
+	int temprand;
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+		temprand = random(0, 100);
+		if (temprand > 50) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (temprand <= 50) {
+			part->getLedArray()[i].r = 0;
+		}
+		part->getLedArray()[i].b = 0;
+		part->getLedArray()[i].g = 0;
+	}
+	LEDS.show();
+}
+
+void SingleStripeAnimationPlayer::copy_led_array(LedPart *part) {
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+    part->ledsX[i][0] = part->getLedArray()[i].r;
+    part->ledsX[i][1] = part->getLedArray()[i].g;
+    part->ledsX[i][2] = part->getLedArray()[i].b;
+	}
+}
+
+void SingleStripeAnimationPlayer::updateIndex(LedPart *part) {
+	part->loopIndex++;
+	if (part->loopIndex >= part->getnumOfLeds()) {
+		part->loopIndex = 0;
+	}
+}
+
+void SingleStripeAnimationPlayer::play_one_color_all(LedPart *part, int cred, int cgrn, int cblu) { //-SET ALL LEDS TO ONE COLOR
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+		part->getLedArray()[i].setRGB(cred, cgrn, cblu);
+	}
+}
+
+void SingleStripeAnimationPlayer::play_one_color_allHSV(LedPart *part, int ahue) { //-SET ALL LEDS TO ONE COLOR (HSV)
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+		part->getLedArray()[i] = CHSV(ahue, part->saturation, part->brightness);
+	}
+}
+
+void SingleStripeAnimationPlayer::play_rainbow_fade(LedPart *part) { //-m2-FADE ALL LEDS THROUGH HSV RAINBOW
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		for (part->loopIndex = 0; part->loopIndex < part->getnumOfLeds(); part->loopIndex++) {
+			part->getLedArray()[part->loopIndex] = CHSV(part->firstHue, part->saturation, part->brightness);
+		}
+		LEDS.show();
+		delay(part->delay);
+	}
+}
+
+void SingleStripeAnimationPlayer::rainbow_loop(LedPart *part) {
+	updateIndex(part);
+	part->getLedArray()[part->loopIndex] = CHSV(part->firstHue, part->saturation, part->brightness);
+}
+
+void SingleStripeAnimationPlayer::playrandom_burst(LedPart *part) {
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->loopIndex = random(0, part->getnumOfLeds());
+		uint8_t iHue = random(0, 255);
+		part->getLedArray()[part->loopIndex] = CHSV(iHue, part->saturation, 255);
+		LEDS.show();
+	}
+}
+
+void SingleStripeAnimationPlayer::color_bounce(LedPart *part) {                       //-m5-BOUNCE COLOR (SINGLE LED)
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		if (part->directionReverse == 0) {
+			part->loopIndex++;
+
+			if (part->loopIndex == part->getnumOfLeds()) {
+				part->directionReverse = 1;
+				part->loopIndex = part->loopIndex - 1;
+			}
+		}
+		if (part->directionReverse == 1) {
+			part->loopIndex = part->loopIndex - 1;
+			if (part->loopIndex == 0) {
+				part->directionReverse = 0;
+			}
+		}
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			if (i == part->loopIndex) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 255);
+			} else {
+				part->getLedArray()[i] = CHSV(0, 0, 0);
+			}
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::color_bounceFADE(LedPart *part) { //-m6-BOUNCE COLOR (SIMPLE MULTI-LED FADE)
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		if (part->directionReverse == 0) {
+			part->loopIndex = part->loopIndex + 1;
+			if (part->loopIndex == part->getnumOfLeds()) {
+				part->directionReverse = 1;
+				part->loopIndex = part->loopIndex - 1;
+			}
+		}
+		if (part->directionReverse == 1) {
+			part->loopIndex = part->loopIndex - 1;
+			if (part->loopIndex == 0) {
+				part->directionReverse = 0;
+			}
+		}
+		int iL1 = adjacent_cw(part, part->loopIndex);
+		int iL2 = adjacent_cw(part, iL1);
+		int iL3 = adjacent_cw(part, iL2);
+		int iR1 = adjacent_ccw(part, part->loopIndex);
+		int iR2 = adjacent_ccw(part, iR1);
+		int iR3 = adjacent_ccw(part, iR2);
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			if (i == part->loopIndex) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 255);
+			} else if (i == iL1) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 150);
+			} else if (i == iL2) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 80);
+			} else if (i == iL3) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 20);
+			} else if (i == iR1) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 150);
+			} else if (i == iR2) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 80);
+			} else if (i == iR3) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 20);
+			} else {
+				part->getLedArray()[i] = CHSV(0, 0, 0);
+			}
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::ems_lightsONE(LedPart *part) { //-m7-EMERGENCY LIGHTS (TWO COLOR SINGLE LED)
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->loopIndex++;
+		if (part->loopIndex >= part->getnumOfLeds()) {
+			part->loopIndex = 0;
+		}
+		part->loopIndexR = part->loopIndex;
+		part->loopIndexB = antipodal_index(part, part->loopIndexR);
+		int thathue = (part->Hue + 160) % 255;
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			if (i == part->loopIndexR) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 255);
+			} else if (i == part->loopIndexB) {
+				part->getLedArray()[i] = CHSV(thathue, part->saturation, 255);
+			} else {
+				part->getLedArray()[i] = CHSV(0, 0, 0);
+			}
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::ems_lightsALL(LedPart *part) { //-m8-EMERGENCY LIGHTS (TWO COLOR SOLID)
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->loopIndex++;
+		if (part->loopIndex >= part->getnumOfLeds()) {
+			part->loopIndex = 0;
+		}
+		part->loopIndexR = part->loopIndex;
+		part->loopIndexB = antipodal_index(part, part->loopIndexR);
+		int thathue = (part->Hue + 160) % 255;
+		part->getLedArray()[part->loopIndexR] = CHSV(part->Hue, part->saturation, 255);
+		part->getLedArray()[part->loopIndexB] = CHSV(thathue, part->saturation, 255);
+	}
+}
+
+void SingleStripeAnimationPlayer::playflicker(LedPart *part) {                //-m9-FLICKER EFFECT
+	int random_bright = random(0, 255);
+	int random_delay = random(10, 100);
+	int random_bool = random(0, random_bright);
+	if (random_bool < 10) {
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			part->getLedArray()[i] = CHSV(part->Hue, part->saturation, random_bright);
+		}
+		LEDS.show();
+		delay(random_delay);
+	}
+}
+
+void SingleStripeAnimationPlayer::pulse_one_color_all(LedPart *part) { //-m10-PULSE BRIGHTNESS ON ALL LEDS TO ONE COLOR
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		if (part->directionReverse == 0) {
+			part->brightness++;
+			if (part->brightness >= 255) {
+				part->directionReverse = 1;
+			}
+		}
+		if (part->directionReverse == 1) {
+			part->brightness = part->brightness - 1;
+			if (part->brightness <= 1) {
+				part->directionReverse = 0;
+			}
+		}
+		for (part->loopIndex = 0; part->loopIndex < part->getnumOfLeds(); part->loopIndex++) {
+			part->getLedArray()[part->loopIndex] = CHSV(part->Hue, part->saturation, part->brightness);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::pulse_one_color_all_rev(LedPart *part) { //-m11-PULSE SATURATION ON ALL LEDS TO ONE COLOR
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		if (part->directionReverse == 0) {
+			part->saturation++;
+			if (part->saturation >= 255) {
+				part->directionReverse = 1;
+			}
+		}
+		if (part->directionReverse == 1) {
+			part->saturation = part->saturation - 1;
+			if (part->saturation <= 1) {
+				part->directionReverse = 0;
+			}
+		}
+		for (part->loopIndex = 0; part->loopIndex < part->getnumOfLeds(); part->loopIndex++) {
+			part->getLedArray()[part->loopIndex] = CHSV(part->Hue, part->saturation, 255);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::fade_vertical(LedPart *part) {     //-m12-FADE 'UP' THE LOOP
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->loopIndex++;
+		if (part->loopIndex > part->TOP_INDEX) {
+			part->loopIndex = 0;
+		}
+		part->loopIndexA = part->loopIndex;
+		part->loopIndexB = horizontal_index(part, part->loopIndexA);
+		part->brightness = part->brightness + 10;
+		if (part->brightness > 255) {
+			part->brightness = 0;
+		}
+		part->getLedArray()[part->loopIndexA] = CHSV(part->Hue, part->saturation, part->brightness);
+		part->getLedArray()[part->loopIndexB] = CHSV(part->Hue, part->saturation, part->brightness);
+	}
+}
+
+void SingleStripeAnimationPlayer::random_red2(LedPart *part) { //QUICK 'N DIRTY RANDOMIZE TO GET CELL AUTOMATA STARTED
+	int temprand;
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+		temprand = random(0, 100);
+		if (temprand > 50) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (temprand <= 50) {
+			part->getLedArray()[i].r = 0;
+		}
+		part->getLedArray()[i].b = 0;
+		part->getLedArray()[i].g = 0;
+	}
+}
+
+void SingleStripeAnimationPlayer::rule30(LedPart *part) { //-m13-1D CELLULAR AUTOMATA - RULE 30 (RED FOR NOW)
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		if (part->directionReverse == 0) {
+			random_red(part);
+			part->directionReverse = 1;
+		}
+		copy_led_array(part);
+		int iCW;
+		int iCCW;
+		int y = 100;
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			iCW = adjacent_cw(part, i);
+			iCCW = adjacent_ccw(part, i);
+		if (part->ledsX[iCCW][0] > y && part->ledsX[i][0] > y && part->ledsX[iCW][0] > y) {
+			part->getLedArray()[i].r = 0;
+		}
+		if (part->ledsX[iCCW][0] > y && part->ledsX[i][0] > y && part->ledsX[iCW][0] <= y) {
+			part->getLedArray()[i].r = 0;
+		}
+		if (part->ledsX[iCCW][0] > y && part->ledsX[i][0] <= y && part->ledsX[iCW][0] > y) {
+			part->getLedArray()[i].r = 0;
+		}
+		if (part->ledsX[iCCW][0] > y && part->ledsX[i][0] <= y && part->ledsX[iCW][0] <= y) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (part->ledsX[iCCW][0] <= y && part->ledsX[i][0] > y && part->ledsX[iCW][0] > y) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (part->ledsX[iCCW][0] <= y && part->ledsX[i][0] > y && part->ledsX[iCW][0] <= y) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (part->ledsX[iCCW][0] <= y && part->ledsX[i][0] <= y && part->ledsX[iCW][0] > y) {
+			part->getLedArray()[i].r = 255;
+		}
+		if (part->ledsX[iCCW][0] <= y && part->ledsX[i][0] <= y && part->ledsX[iCW][0] <= y) {
+			part->getLedArray()[i].r = 0;
+		}
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::random_march(LedPart *part) {        //-m14-RANDOM MARCH CCW
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		copy_led_array(part);
+		int iCCW;
+		part->getLedArray()[0] = CHSV(random(0, 255), 255, 255);
+		for (part->loopIndex = 1; part->loopIndex < part->getnumOfLeds(); part->loopIndex++) {
+			iCCW = adjacent_ccw(part, part->loopIndex);
+		part->getLedArray()[part->loopIndex].r = part->ledsX[iCCW][0];
+		part->getLedArray()[part->loopIndex].g = part->ledsX[iCCW][1];
+		part->getLedArray()[part->loopIndex].b = part->ledsX[iCCW][2];
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::rwb_march(LedPart *part) {            //-m15-R,W,B MARCH CCW
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		copy_led_array(part);
+		int iCCW;
+		part->loopIndex++;
+		if (part->loopIndex > 2) {
+			part->loopIndex = 0;
+		}
+		switch (part->loopIndex) {
+		case 0:
+			part->getLedArray()[0].r = 255;
+			part->getLedArray()[0].g = 0;
+			part->getLedArray()[0].b = 0;
+			break;
+		case 1:
+			part->getLedArray()[0].r = 255;
+			part->getLedArray()[0].g = 255;
+			part->getLedArray()[0].b = 255;
+			break;
+		case 2:
+			part->getLedArray()[0].r = 0;
+			part->getLedArray()[0].g = 0;
+			part->getLedArray()[0].b = 255;
+			break;
+		}
+		for (int i = 1; i < part->getnumOfLeds(); i++) {
+			iCCW = adjacent_ccw(part, i);
+		part->getLedArray()[i].r = part->ledsX[iCCW][0];
+		part->getLedArray()[i].g = part->ledsX[iCCW][1];
+		part->getLedArray()[i].b = part->ledsX[iCCW][2];
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::radiation(LedPart *part) { //-m16-SORT OF RADIATION SYMBOLISH-
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		int N3 = int(part->getnumOfLeds() / 3);
+		int N6 = int(part->getnumOfLeds() / 6);
+		int N12 = int(part->getnumOfLeds() / 12);
+		for (int i = 0; i < N6; i++) {     //-HACKY, I KNOW...
+			part->tcount = part->tcount + .02;
+			if (part->tcount > 3.14) {
+				part->tcount = 0.0;
+			}
+			part->brightness = int(sin(part->tcount) * 255);
+			int j0 = (i + part->getnumOfLeds() - N12) % part->getnumOfLeds();
+			int j1 = (j0 + N3) % part->getnumOfLeds();
+			int j2 = (j1 + N3) % part->getnumOfLeds();
+			part->getLedArray()[j0] = CHSV(part->Hue, part->saturation, part->brightness);
+			part->getLedArray()[j1] = CHSV(part->Hue, part->saturation, part->brightness);
+			part->getLedArray()[j2] = CHSV(part->Hue, part->saturation, part->brightness);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::color_loop_vardelay(LedPart *part) { //-m17-COLOR LOOP (SINGLE LED) w/ VARIABLE DELAY
+	part->loopIndex++;
+	if (part->loopIndex > part->getnumOfLeds()) {
+		part->loopIndex = 0;
+	}
+	int di = abs(part->TOP_INDEX - part->loopIndex);
+	int t = constrain((10 / di) * 10, 10, 500);
+	for (int i = 0; i < part->getnumOfLeds(); i++) {
+		if (i == part->loopIndex) {
+			part->getLedArray()[i] = CHSV(0, part->saturation, 255);
+		} else {
+			part->getLedArray()[i].r = 0;
+			part->getLedArray()[i].g = 0;
+			part->getLedArray()[i].b = 0;
+		}
+	}
+	delay(t);
+}
+
+void SingleStripeAnimationPlayer::white_temps(LedPart *part) { //-m18-SHOW A SAMPLE OF BLACK BODY RADIATION COLOR TEMPERATURES
+	EVERY_N_MILLISECONDS(part->delay * 2)
+	{
+		int N9 = int(part->getnumOfLeds() / 9);
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			if (i >= 0 && i < N9) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 147;
+				part->getLedArray()[i].b = 41;
+			}         //-CANDLE - 1900
+			if (i >= N9 && i < N9 * 2) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 197;
+				part->getLedArray()[i].b = 143;
+			}     //-40W TUNG - 2600
+			if (i >= N9 * 2 && i < N9 * 3) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 214;
+				part->getLedArray()[i].b = 170;
+			}   //-100W TUNG - 2850
+			if (i >= N9 * 3 && i < N9 * 4) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 241;
+				part->getLedArray()[i].b = 224;
+			}   //-HALOGEN - 3200
+			if (i >= N9 * 4 && i < N9 * 5) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 250;
+				part->getLedArray()[i].b = 244;
+			}   //-CARBON ARC - 5200
+			if (i >= N9 * 5 && i < N9 * 6) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 255;
+				part->getLedArray()[i].b = 251;
+			}   //-HIGH NOON SUN - 5400
+			if (i >= N9 * 6 && i < N9 * 7) {
+				part->getLedArray()[i].r = 255;
+				part->getLedArray()[i].g = 255;
+				part->getLedArray()[i].b = 255;
+			}   //-DIRECT SUN - 6000
+			if (i >= N9 * 7 && i < N9 * 8) {
+				part->getLedArray()[i].r = 201;
+				part->getLedArray()[i].g = 226;
+				part->getLedArray()[i].b = 255;
+			}   //-OVERCAST SKY - 7000
+			if (i >= N9 * 8 && i < part->getnumOfLeds()) {
+				part->getLedArray()[i].r = 64;
+				part->getLedArray()[i].g = 156;
+				part->getLedArray()[i].b = 255;
+			}   //-CLEAR BLUE SKY - 20000
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::sin_bright_wave(LedPart *part) { //-m19-BRIGHTNESS SINE WAVE
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			part->tcount = part->tcount + .1;
+			if (part->tcount > 3.14) {
+				part->tcount = 0.0;
+			}
+			part->brightness = int(sin(part->tcount) * 255);
+			part->getLedArray()[i] = CHSV(part->Hue, part->saturation, part->brightness);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::pop_horizontal(LedPart *part) { //-m20-POP FROM LEFT TO RIGHT UP THE RING
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		int ix;
+		if (part->directionReverse == 0) {
+			part->directionReverse = 1;
+			ix = part->loopIndex;
+		} else if (part->directionReverse == 1) {
+			part->directionReverse = 0;
+			ix = horizontal_index(part, part->loopIndex);
+			part->loopIndex++;
+			if (part->loopIndex > part->TOP_INDEX) {
+				part->loopIndex = 0;
+			}
+		}
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			if (i == ix) {
+				part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 255);
+			} else {
+				part->getLedArray()[i].r = 0;
+				part->getLedArray()[i].g = 0;
+				part->getLedArray()[i].b = 0;
+			}
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::quad_bright_curve(LedPart *part) { //-m21-QUADRATIC BRIGHTNESS CURVER
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		int ax;
+		for (int x = 0; x < part->getnumOfLeds(); x++) {
+			if (x <= part->TOP_INDEX) {
+				ax = x;
+			} else if (x > part->TOP_INDEX) {
+				ax = part->getnumOfLeds() - x;
+			}
+			int a = 1;
+			int b = 1;
+			int c = 0;
+			int iquad = -(ax * ax * a) + (ax * b) + c; //-ax2+bx+c
+			int hquad = -(part->TOP_INDEX * part->TOP_INDEX * a) + (part->TOP_INDEX * b) + c;
+			part->brightness = int((float(iquad) / float(hquad)) * 255);
+			part->getLedArray()[x] = CHSV(part->Hue, part->saturation, part->brightness);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::playrandom_color_pop(LedPart *part) {    //-m25-RANDOM COLOR POP
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->loopIndex = random(0, part->getnumOfLeds());
+		part->Hue = random(0, 255);
+		play_one_color_all(part, 0, 0, 0);
+		part->getLedArray()[part->loopIndex] = CHSV(part->Hue, part->saturation, 255);
+	}
+}
+
+void SingleStripeAnimationPlayer::playems_lightsSTROBE(LedPart *part) { //-m26-EMERGENCY LIGHTS (STROBE LEFT/RIGHT)
+	part->Hue = 0;
+	int thathue = (part->Hue + 160) % 255;
+	for (int x = 0; x < 5; x++) {
+		for (int i = 0; i < part->TOP_INDEX; i++) {
+			part->getLedArray()[i] = CHSV(part->Hue, part->saturation, 255);
+		}
+		LEDS.show();
+		delay(part->delay);
+		play_one_color_all(part, 0, 0, 0);
+		LEDS.show();
+		delay(part->delay);
+	}
+	for (int x = 0; x < 5; x++) {
+		for (int i = part->TOP_INDEX; i < part->getnumOfLeds(); i++) {
+			part->getLedArray()[i] = CHSV(thathue, part->saturation, 255);
+		}
+		LEDS.show();
+		delay(part->delay);
+		play_one_color_all(part, 0, 0, 0);
+		LEDS.show();
+		delay(part->delay);
+	}
+}
+
+void SingleStripeAnimationPlayer::rgb_propeller(LedPart *part) {          //-m27-RGB PROPELLER
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		part->Hue = (part->Hue + 80) % 255;
+		int bhue = (part->Hue + 160) % 255;
+		int N3 = int(part->getnumOfLeds() / 3);
+		int N12 = int(part->getnumOfLeds() / 12);
+		for (int i = 0; i < N3; i++) {
+			int j0 = (part->loopIndex + i + part->getnumOfLeds() - N12) % part->getnumOfLeds();
+			int j1 = (j0 + N3) % part->getnumOfLeds();
+			int j2 = (j1 + N3) % part->getnumOfLeds();
+			part->getLedArray()[j0] = CHSV(part->Hue, part->saturation, 255);
+			part->getLedArray()[j1] = CHSV(part->Hue, part->saturation, 255);
+			part->getLedArray()[j2] = CHSV(bhue, part->saturation, 255);
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::playkitt(LedPart *part) {           //-m28-KNIGHT INDUSTIES 2000
+	int rand = random(0, part->TOP_INDEX);
+	for (int i = 0; i < rand; i++) {
+		part->getLedArray()[part->TOP_INDEX + i] = CHSV(part->Hue, part->saturation, 255);
+		part->getLedArray()[part->TOP_INDEX - i] = CHSV(part->Hue, part->saturation, 255);
+		LEDS.show();
+		delay(part->delay / rand);
+	}
+	for (int i = rand; i > 0; i--) {
+		part->getLedArray()[part->TOP_INDEX + i] = CHSV(part->Hue, part->saturation, 0);
+		part->getLedArray()[part->TOP_INDEX - i] = CHSV(part->Hue, part->saturation, 0);
+		LEDS.show();
+		delay(part->delay / rand);
+	}
+}
+
+void SingleStripeAnimationPlayer::matrix(LedPart *part) {
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		//-m29-ONE LINE MATRIX
+		int rand = random(0, 100);
+		if (rand > 90) {
+			part->getLedArray()[0] = CHSV(part->Hue, part->saturation, 255);
+		} else {
+			part->getLedArray()[0] = CHSV(part->Hue, part->saturation, 0);
+		}
+		copy_led_array(part);
+		for (int i = 1; i < part->getnumOfLeds(); i++) {
+		part->getLedArray()[i].r = part->ledsX[i - 1][0];
+		part->getLedArray()[i].g = part->ledsX[i - 1][1];
+		part->getLedArray()[i].b = part->ledsX[i - 1][2];
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::strip_march_cw(LedPart *part) {        //-m50-MARCH STRIP CW
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		copy_led_array(part);
+		int iCW;
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			iCW = adjacent_cw(part, i);
+		part->getLedArray()[i].r = part->ledsX[iCW][0];
+		part->getLedArray()[i].g = part->ledsX[iCW][1];
+		part->getLedArray()[i].b = part->ledsX[iCW][2];
+		}
+	}
+}
+
+void SingleStripeAnimationPlayer::strip_march_ccw(LedPart *part) {      //-m51-MARCH STRIP CCW
+	EVERY_N_MILLISECONDS(part->delay)
+	{
+		copy_led_array(part);
+		int iCCW;
+		for (int i = 0; i < part->getnumOfLeds(); i++) {
+			iCCW = adjacent_ccw(part, i);
+		part->getLedArray()[i].r = part->ledsX[iCCW][0];
+		part->getLedArray()[i].g = part->ledsX[iCCW][1];
+		part->getLedArray()[i].b = part->ledsX[iCCW][2];
+		}
+	}
+}
+

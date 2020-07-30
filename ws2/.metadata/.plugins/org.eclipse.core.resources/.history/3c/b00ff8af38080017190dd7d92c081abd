@@ -1,0 +1,376 @@
+// Do not remove the include below
+#define USE_OCTOWS2811
+#include "CoolTable.h"
+
+const int maxBrightness = 150;
+int currentBrigthness = 30;
+Table table = Table();
+
+void setup() {
+	delay(3000);   // If things go bad, you can shutdown before the LED's start drawing power.
+	LEDS.addLeds<OCTOWS2811>(table.ledArray, NUM_LEDS_PER_STRIP);
+	LEDS.setBrightness(currentBrigthness);
+	FastLED.setBrightness(currentBrigthness);
+	Serial.begin(9600);
+}
+
+void loop() {
+	table.update();
+	LEDS.show();
+	Serial.println(LEDS.getFPS());
+}
+
+Table::Table() {
+	pinMode(buttonMutePumpPin, INPUT_PULLUP);
+	pinMode(buttonBrightnessPin, INPUT_PULLUP);
+	pinMode(buttonNextAnimationPin, INPUT_PULLUP);
+	pinMode(buttonUnknownsPin, INPUT_PULLUP);
+	topLeds = LedPart(table.getTopLedsArray(), table.numOfTopLeds);
+	frontLeds = LedPart(table.getFrontLedsArray(), table.numOfFrontLeds);
+	leftLeds = LedPart(table.getLeftLedsArray(), table.numOfLeftLeds);
+	rightLeds = LedPart(table.getRightLedsArray(), table.numOfRightLeds);
+	backLeds = LedPart(table.getBackLedsArray(), table.numOfBackLeds);
+	feetLeds = LedPart(table.getFeetLedsArray(), table.numOfFeetLeds);
+
+}
+
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+
+void Table::update() {
+	updateButtonStates();
+	playAnimation();
+	player.update();
+
+}
+
+void Table::updateButtonStates() {
+
+	switch (checkButtonState(&buttonUnknowns)) {
+	case 0:
+		break;
+	case 1:
+		//	airpump.toogleAirpumpState();
+		colorIndex++;
+		if (colorIndex > 7) {
+			colorIndex = 0;
+		}
+		setColorforAllParts();
+
+	case 2: //Longklick means  ?
+		Serial.println("Mute unknown knopf gedrückt. lang");
+		//	airpump.toogleAirpumpState();
+		break;
+	}
+	Serial.println(checkButtonState(&buttonMutePump));
+
+	switch (checkButtonState(&buttonMutePump)) {
+	case 0:
+		break;
+	case 1: // shortclick means toogle aripump
+		Serial.println("Mute Pump knopf gedrückt. lang");
+		//airpump.toogleAirpumpState();
+		break;
+	case 2: //Longklick means  ?
+		break;
+
+	}
+
+	switch (checkButtonState(&buttonBrightness)) {
+	case 0:
+		break;
+	case 1: // shortclick means change the brightness
+		Serial.println("buttonBrightness gedrückt. kurz");
+		currentBrigthness = currentBrigthness + 30;
+		if (currentBrigthness > maxBrightness) {
+			currentBrigthness = 30;
+		}
+		Serial.println("setting brightness to: " + currentBrigthness);
+		LEDS.setBrightness(currentBrigthness);
+		FastLED.setBrightness(currentBrigthness);
+		break;
+	case 2: //Longklick means  change color
+		break;
+	}
+
+	switch (checkButtonState(&buttonNextAnimation)) {
+	case 0:
+		break;
+	case 1: // shortclick means change to next animation
+		animationMode++;
+		Serial.println("Next knopf . animation:");
+		Serial.print(animationMode);
+		break;
+	case 2: //Longklick means  change to previous animation
+		animationMode--;
+		Serial.println("Zurück knopf . animation:");
+		Serial.print(animationMode);
+		break;
+	}
+//	if (buttonBrightness.update()) {
+//		if (buttonBrightness.fallingEdge()) {
+//			Serial.println("buttonBrightness gedrückt. ja");
+//			currentBrigthness = currentBrigthness + 15;
+//			if (currentBrigthness > maxBrightness) {
+//				currentBrigthness = 10;
+//			}
+//			Serial.println("setting brightness to: " + currentBrigthness);
+//			LEDS.setBrightness(currentBrigthness);
+//			FastLED.setBrightness(currentBrigthness);
+//		}
+//	}
+//
+//	if (buttonNextAnimation.update()) {
+//		if (buttonNextAnimation.fallingEdge()) {
+//			animationMode++;
+//			Serial.println("Next knopf . animation:");
+//			Serial.print(animationMode);
+//			table.airpump.toogleAirpumpState();
+//		}
+//	}
+
+}
+
+int Table::checkButtonState(Bounce *button) {
+	if (button->update()) {
+		if (button->fallingEdge()) {
+			Serial.println("falling edge");
+			buttonTimePressed = millis();
+		} else if (button->risingEdge()) {
+			if (buttonTimePressed != 0) {
+				unsigned long deltaTime = millis() - buttonTimePressed;
+				buttonTimePressed = 0;
+				Serial.println("rising edge");
+				if (deltaTime < 500) {
+					// do short time stuff
+					Serial.println("short");
+					return 1;
+				} else {
+					// do long time stuff
+					Serial.println("long");
+					return 2;
+				}
+			}
+		}
+	}
+	return 0;
+}
+
+void Table::setColorforAllParts() {
+
+	switch (colorIndex) {
+	case 0:
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, topLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, frontLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, leftLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, rightLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, backLeds);
+		setColorForLedPart(HUE_AQUA, HUE_GREEN, feetLeds);
+	case 1:
+		setColorForLedPart(HUE_BLUE, HUE_RED, topLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, frontLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, leftLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, rightLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, backLeds);
+		setColorForLedPart(HUE_BLUE, HUE_RED, feetLeds);
+		break;
+	case 2:
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, topLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, frontLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, leftLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, rightLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, backLeds);
+		setColorForLedPart(HUE_GREEN, HUE_PURPLE, feetLeds);
+		break;
+	case 3:
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, topLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, frontLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, leftLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, rightLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, backLeds);
+		setColorForLedPart(HUE_ORANGE, HUE_YELLOW, feetLeds);
+		break;
+	case 4:
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, topLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, frontLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, leftLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, rightLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, backLeds);
+		setColorForLedPart(HUE_PINK, HUE_ORANGE, feetLeds);
+		break;
+	case 5:
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, topLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, frontLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, leftLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, rightLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, backLeds);
+		setColorForLedPart(HUE_PURPLE, HUE_AQUA, feetLeds);
+		break;
+	case 6:
+		setColorForLedPart(HUE_RED, HUE_PINK, topLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, frontLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, leftLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, rightLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, backLeds);
+		setColorForLedPart(HUE_RED, HUE_PINK, feetLeds);
+		break;
+	case 7:
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, topLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, frontLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, leftLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, rightLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, backLeds);
+		setColorForLedPart(HUE_YELLOW, HUE_BLUE, feetLeds);
+		break;
+	}
+}
+
+void Table::setColorForLedPart(uint8_t hue1, uint8_t hue2, LedPart part) {
+	part.firstHue = hue1;
+	part.secondHue = hue2;
+
+}
+
+struct CRGB * Table::getTopLedsArray() {
+	return getLedsForStripe(stripeNumTopLeds, numOfTopLeds);
+
+}
+struct CRGB * Table::getFrontLedsArray() {
+	return getLedsForStripe(stripeNumFrontLeds, numOfFrontLeds);
+
+}
+struct CRGB * Table::getLeftLedsArray() {
+	return getLedsForStripe(stripeNumleftLeds, numOfLeftLeds);
+
+}
+struct CRGB * Table::getRightLedsArray() {
+	return getLedsForStripe(stripeNumRightLeds, numOfRightLeds);
+
+}
+struct CRGB * Table::getBackLedsArray() {
+	return getLedsForStripe(stripeNumBackLeds, numOfBackLeds);
+
+}
+struct CRGB * Table::getFeetLedsArray() {
+	return getLedsForStripe(stripeNumFeetLeds, numOfFeetLeds);
+
+}
+
+struct CRGB * Table::getLedsForStripe(int nStripe, int nlength) {
+	int startpoint = 0;
+	for (int var = 1; var < nStripe; ++var) {
+		startpoint = startpoint + NUM_LEDS_PER_STRIP;
+	}
+	return ledArray(startpoint, nlength);
+
+}
+
+void Table::playAnimation() {
+	if (animationMode > 32) {
+		animationMode = 0;
+	}
+	if (animationmode <=0){
+		animationMode =32
+	}
+	switch (animationMode) {
+	case 0:
+		//player.octoWS2811StripTesterRainbow(table.ledArray, NUM_STRIPS,
+		//NUM_LEDS_PER_STRIP);
+		player.play_one_color_allHSV(&topLeds, topLeds.firstHue);
+		break;
+	case 1:
+		player.playConfetti(&topLeds);
+		break;
+	case 2:
+		player.playJuggle(&topLeds);
+		break;
+	case 3:
+		player.playRainbowWithGlitter(&topLeds);
+		break;
+	case 4:
+		player.playSinelon(&topLeds);
+		break;
+	case 5:
+		player.playbpm(&topLeds);
+		break;
+	case 6:
+		player.color_bounce(&topLeds);
+		break;
+	case 7:
+		player.color_bounceFADE(&topLeds);
+		break;
+	case 8:
+		player.color_loop_vardelay(&topLeds);
+		break;
+	case 9:
+		player.ems_lightsALL(&topLeds);
+		break;
+	case 10:
+		player.ems_lightsONE(&topLeds);
+		break;
+	case 11:
+		player.playems_lightsSTROBE(&topLeds);
+		break;
+	case 12:
+		player.fade_vertical(&topLeds);
+		break;
+	case 13:
+		player.playflicker(&topLeds);
+		break;
+	case 14:
+		player.playkitt(&topLeds);
+		break;
+	case 15:
+		player.matrix(&topLeds);
+		break;
+	case 16:
+		player.pop_horizontal(&topLeds);
+		break;
+	case 17:
+		player.pulse_one_color_all(&topLeds);
+		break;
+	case 18:
+		player.pulse_one_color_all_rev(&topLeds);
+		break;
+	case 19:
+		player.quad_bright_curve(&topLeds);
+		break;
+	case 20:
+		player.radiation(&topLeds);
+		break;
+	case 21:
+		player.rainbow_loop(&topLeds);
+		break;
+	case 22:
+		player.playrandom_burst(&topLeds);
+		break;
+	case 23:
+		player.playrandom_color_pop(&topLeds);
+		break;
+	case 24:
+		player.random_red(&topLeds);
+		break;
+	case 25:
+		player.rgb_propeller(&topLeds);
+		break;
+	case 26:
+		player.rule30(&topLeds);
+		break;
+	case 27:
+		player.rwb_march(&topLeds);
+		break;
+	case 28:
+		player.sin_bright_wave(&topLeds);
+		break;
+	case 29:
+		player.strip_march_ccw(&topLeds);
+		break;
+	case 30:
+		player.strip_march_cw(&topLeds);
+		break;
+	case 31:
+		player.white_temps(&topLeds); // crap
+		break;
+	}
+}

@@ -1,0 +1,73 @@
+10:24:19 **** Incremental Build of configuration Release for project sdf ****
+"E:\\ide\\sloeber2\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ../.ino.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -Os -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=72000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -MMD -MP -MF".ino.cpp.d" -MT".ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../.ino.cpp" -o ".ino.cpp.o"  -Wall
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino:43:11: error: redefinition of 'const int ledsPerStrip'
+ const int ledsPerStrip = 60;
+           ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:43:11: error: 'const int ledsPerStrip' previously defined here
+ const int ledsPerStrip = 120;
+           ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino:45:40: error: redefinition of 'int displayMemory [720]'
+ DMAMEM int displayMemory[ledsPerStrip*6];
+                                        ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:45:12: error: 'int displayMemory [720]' previously declared here
+ DMAMEM int displayMemory[ledsPerStrip*6];
+            ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino:46:33: error: redefinition of 'int drawingMemory [720]'
+ int drawingMemory[ledsPerStrip*6];
+                                 ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:46:5: error: 'int drawingMemory [720]' previously declared here
+ int drawingMemory[ledsPerStrip*6];
+     ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino:48:11: error: redefinition of 'const int config'
+ const int config = WS2811_GRB | WS2811_800kHz;
+           ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:48:11: error: 'const int config' previously defined here
+ const int config = WS2811_GRB | WS2811_800kHz;
+           ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino:50:17: error: redefinition of 'OctoWS2811 leds'
+ OctoWS2811 leds(ledsPerStrip, displayMemory, drawingMemory, config);
+                 ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:50:12: error: 'OctoWS2811 leds' previously declared here
+ OctoWS2811 leds(ledsPerStrip, displayMemory, drawingMemory, config);
+            ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino: In function 'void setup()':
+../Rainbow.ino:55:6: error: redefinition of 'void setup()'
+ void setup() {
+      ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:52:6: error: 'void setup()' previously defined here
+ void setup() {
+      ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino: In function 'void loop()':
+../Rainbow.ino:70:6: error: redefinition of 'void loop()'
+ void loop() {
+      ^
+In file included from ../.ino.cpp:20:0:
+../BasicTest.ino:65:6: error: 'void loop()' previously defined here
+ void loop() {
+      ^
+In file included from ../.ino.cpp:21:0:
+../Rainbow.ino: In function 'void rainbow(int, int)':
+../Rainbow.ino:86:20: warning: unused variable 'offset' [-Wunused-variable]
+   int color, x, y, offset, wait;
+                    ^
+subdir.mk:28: recipe for target '.ino.cpp.o' failed
+make: *** [.ino.cpp.o] Error 1
+
+10:24:19 Build Finished (took 835ms)
+

@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?metadataRepository version='1.1.0'?>
+<repository name='update site: https://raw.githubusercontent.com/dev-abkulkar/pextools/PexTools_SubMenuUpdateSite/site.xml' type='org.eclipse.equinox.internal.p2.metadata.repository.LocalMetadataRepository' version='1'>
+  <properties size='2'>
+    <property name='p2.timestamp' value='1485467278726'/>
+    <property name='site.checksum' value='838508914'/>
+  </properties>
+  <references size='6'>
+    <repository uri='https://pextools.googlecode.com/svn/trunk/PexToolsUpdateSite/site.xml' url='https://pextools.googlecode.com/svn/trunk/PexToolsUpdateSite/site.xml' type='0' options='0'/>
+    <repository uri='https://pextools.googlecode.com/svn/trunk/PexToolsUpdateSite/site.xml' url='https://pextools.googlecode.com/svn/trunk/PexToolsUpdateSite/site.xml' type='1' options='0'/>
+    <repository uri='http://abhinandanmk.blogspot.com/' url='http://abhinandanmk.blogspot.com/' type='1' options='0'/>
+    <repository uri='http://abhinandanmk.blogspot.com/' url='http://abhinandanmk.blogspot.com/' type='0' options='0'/>
+    <repository uri='http://code.google.com/p/pextools/' url='http://code.google.com/p/pextools/' type='0' options='0'/>
+    <repository uri='http://code.google.com/p/pextools/' url='http://code.google.com/p/pextools/' type='1' options='0'/>
+  </references>
+  <units size='4'>
+    <unit id='PexTools_SubMenuFeature.feature.group' version='1.0.0.3' singleton='false'>
+      <update id='PexTools_SubMenuFeature.feature.group' range='[0.0.0,1.0.0.3)' severity='0'/>
+      <properties size='5'>
+        <property name='org.eclipse.equinox.p2.name' value='PexToolsFeature'/>
+        <property name='org.eclipse.equinox.p2.description' value='After this plugin is installed,the right click menu on any item&#xA;in the Package Explorer should have one extra submenu named &apos;PexTools&apos;&#xA;&#xA;The submenu has three extra menu options: &#xA;&#xA;1. Open Command Window Here: Opens the Shell/Command Prompt with&#xA;the current working directory set to the file&apos;s parent directory&#xA;or the folder&apos;s path.&#xA;2. Open Folder: Opens a file explorer window with the directory&#xA;chosen or the file&apos;s parent directory&#xA;3. Copy Path To Clipboard: Copies the absolute path of the file&#xA;or folder into clipboard&#xA;ShortCuts for files active in the editor:&#xA;1. Open Command Window Here: Ctrl+Alt+Z&#xA;2. Open Folder: Ctrl+Alt+X&#xA;3. Copy Path To Clipboard: Ctrl+Alt+C'/>
+        <property name='org.eclipse.equinox.p2.description.url' value='http://code.google.com/p/pextools/wiki/Welcome'/>
+        <property name='org.eclipse.equinox.p2.provider' value='Abhinandan'/>
+        <property name='org.eclipse.equinox.p2.type.group' value='true'/>
+      </properties>
+      <provides size='1'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenuFeature.feature.group' version='1.0.0.3'/>
+      </provides>
+      <requires size='7'>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui' range='0.0.0'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.core.runtime' range='3.5.0'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.jdt.core' range='3.5.0'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.core.resources' range='3.5.0'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='org.eclipse.ui.ide' range='3.5.0'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenu' range='[1.0.0.3,1.0.0.3]'/>
+        <required namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenuFeature.feature.jar' range='[1.0.0.3,1.0.0.3]'>
+          <filter>
+            (org.eclipse.update.install.features=true)
+          </filter>
+        </required>
+      </requires>
+      <touchpoint id='null' version='0.0.0'/>
+      <licenses size='1'>
+        <license uri='http://www.gnu.org/licenses/gpl.html' url='http://www.gnu.org/licenses/gpl.html'>
+          Copyright (C) 2012  Abhinandan M Kulkarni&#xA;&#xA;    This program is free software: you can redistribute it and/or modify&#xA;    it under the terms of the GNU General Public License as published by&#xA;    the Free Software Foundation, either version 3 of the License, or&#xA;    (at your option) any later version.&#xA;&#xA;    This program is distributed in the hope that it will be useful,&#xA;    but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#xA;    GNU General Public License for more details.&#xA;&#xA;    You should have received a copy of the GNU General Public License&#xA;    along with this program.  If not, see http://www.gnu.org/licenses/.
+        </license>
+      </licenses>
+      <copyright>
+        Copyright (C) 2012 Abhinandan M Kulkarni
+      </copyright>
+    </unit>
+    <unit id='https://raw.githubusercontent.com/dev-abkulkar/pextools/PexTools_SubMenuUpdateSite/site.xml.Abhi Tools' version='1.0.0.2---79'>
+      <properties size='2'>
+        <property name='org.eclipse.equinox.p2.name' value='Abhi Tools'/>
+        <property name='org.eclipse.equinox.p2.type.category' value='true'/>
+      </properties>
+      <provides size='1'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='https://raw.githubusercontent.com/dev-abkulkar/pextools/PexTools_SubMenuUpdateSite/site.xml.Abhi Tools' version='1.0.0.2---79'/>
+      </provides>
+      <requires size='1'>
+        <required namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenuFeature.feature.group' range='[1.0.0.3,1.0.0.3]'/>
+      </requires>
+      <touchpoint id='null' version='0.0.0'/>
+    </unit>
+    <unit id='PexTools_SubMenu' version='1.0.0.3' singleton='false'>
+      <update id='PexTools_SubMenu' range='[0.0.0,1.0.0.3)' severity='0'/>
+      <properties size='1'>
+        <property name='org.eclipse.equinox.p2.partial.iu' value='true'/>
+      </properties>
+      <provides size='3'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenu' version='1.0.0.3'/>
+        <provided namespace='osgi.bundle' name='PexTools_SubMenu' version='1.0.0.3'/>
+        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='bundle' version='1.0.0'/>
+      </provides>
+      <artifacts size='1'>
+        <artifact classifier='osgi.bundle' id='PexTools_SubMenu' version='1.0.0.3'/>
+      </artifacts>
+      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+      <touchpointData size='1'>
+        <instructions size='1'>
+          <instruction key='manifest'>
+            Bundle-SymbolicName: PexTools_SubMenu&#xA;Bundle-Version: 1.0.0.3&#xA;
+          </instruction>
+        </instructions>
+      </touchpointData>
+    </unit>
+    <unit id='PexTools_SubMenuFeature.feature.jar' version='1.0.0.3'>
+      <properties size='4'>
+        <property name='org.eclipse.equinox.p2.name' value='PexToolsFeature'/>
+        <property name='org.eclipse.equinox.p2.description' value='After this plugin is installed,the right click menu on any item&#xA;in the Package Explorer should have one extra submenu named &apos;PexTools&apos;&#xA;&#xA;The submenu has three extra menu options: &#xA;&#xA;1. Open Command Window Here: Opens the Shell/Command Prompt with&#xA;the current working directory set to the file&apos;s parent directory&#xA;or the folder&apos;s path.&#xA;2. Open Folder: Opens a file explorer window with the directory&#xA;chosen or the file&apos;s parent directory&#xA;3. Copy Path To Clipboard: Copies the absolute path of the file&#xA;or folder into clipboard&#xA;ShortCuts for files active in the editor:&#xA;1. Open Command Window Here: Ctrl+Alt+Z&#xA;2. Open Folder: Ctrl+Alt+X&#xA;3. Copy Path To Clipboard: Ctrl+Alt+C'/>
+        <property name='org.eclipse.equinox.p2.description.url' value='http://code.google.com/p/pextools/wiki/Welcome'/>
+        <property name='org.eclipse.equinox.p2.provider' value='Abhinandan'/>
+      </properties>
+      <provides size='3'>
+        <provided namespace='org.eclipse.equinox.p2.iu' name='PexTools_SubMenuFeature.feature.jar' version='1.0.0.3'/>
+        <provided namespace='org.eclipse.equinox.p2.eclipse.type' name='feature' version='1.0.0'/>
+        <provided namespace='org.eclipse.update.feature' name='PexTools_SubMenuFeature' version='1.0.0.3'/>
+      </provides>
+      <filter>
+        (org.eclipse.update.install.features=true)
+      </filter>
+      <artifacts size='1'>
+        <artifact classifier='org.eclipse.update.feature' id='PexTools_SubMenuFeature' version='1.0.0.3'/>
+      </artifacts>
+      <touchpoint id='org.eclipse.equinox.p2.osgi' version='1.0.0'/>
+      <touchpointData size='1'>
+        <instructions size='1'>
+          <instruction key='zipped'>
+            true
+          </instruction>
+        </instructions>
+      </touchpointData>
+      <licenses size='1'>
+        <license uri='http://www.gnu.org/licenses/gpl.html' url='http://www.gnu.org/licenses/gpl.html'>
+          Copyright (C) 2012  Abhinandan M Kulkarni&#xA;&#xA;    This program is free software: you can redistribute it and/or modify&#xA;    it under the terms of the GNU General Public License as published by&#xA;    the Free Software Foundation, either version 3 of the License, or&#xA;    (at your option) any later version.&#xA;&#xA;    This program is distributed in the hope that it will be useful,&#xA;    but WITHOUT ANY WARRANTY; without even the implied warranty of&#xA;    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the&#xA;    GNU General Public License for more details.&#xA;&#xA;    You should have received a copy of the GNU General Public License&#xA;    along with this program.  If not, see http://www.gnu.org/licenses/.
+        </license>
+      </licenses>
+      <copyright>
+        Copyright (C) 2012 Abhinandan M Kulkarni
+      </copyright>
+    </unit>
+  </units>
+</repository>

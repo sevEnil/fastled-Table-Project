@@ -1,0 +1,74 @@
+#include "Airpump.h"
+#include<OctoWS2811.h>
+#include<FastLED.h>
+#include <Bounce.h>
+#include "SingleStripeAnimationPlayer.h"
+#include "LedPart.h"
+
+#ifndef TABLE_H_
+#define TABLE_H_
+#define NUM_LEDS_PER_STRIP 170
+#define NUM_STRIPS 8
+
+class Table {
+public:
+	CRGBArray<NUM_STRIPS * NUM_LEDS_PER_STRIP> ledArray;
+	Airpump airpump = Airpump();
+	Table();
+	virtual ~Table();
+	void update();
+private:
+	int buttonMutePumpPin = 22;
+	int buttonBrightnessPin = 19;
+	int buttonNextAnimationPin =23;
+	int buttonUnknownsPin=17;
+	int numOfTopLeds= 168;
+	int numOfLeftLeds= 70;
+	int numOfRightLeds= 70;
+	int numOfBackLeds= 70;
+	int numOfFeetLeds= 7;
+	int numOfFrontLeds= 70;
+	int stripeNumTopLeds=5;
+	int stripeNumFrontLeds=4;
+	int stripeNumleftLeds=6;
+	int stripeNumRightLeds=2;
+	int stripeNumBackLeds=7;
+	int stripeNumFeetLeds=3;
+
+	int animationMode=0;
+	int updateDelay=20; //general delay next update after 20ms (mostly nonblocking)
+	int colorIndex=0;
+
+	Bounce buttonMutePump = Bounce(buttonMutePumpPin, 10);// 10 ms debounce
+	Bounce buttonBrightness = Bounce(buttonBrightnessPin, 10);
+	Bounce buttonNextAnimation = Bounce(buttonNextAnimationPin, 10);
+	Bounce buttonUnknowns = Bounce(buttonUnknownsPin, 10);
+	unsigned long buttonTimePressed =0;
+
+
+	LedPart topLeds;
+	LedPart frontLeds;
+	LedPart leftLeds;
+	LedPart rightLeds;
+	LedPart backLeds;
+	LedPart feetLeds;
+	SingleStripeAnimationPlayer player = SingleStripeAnimationPlayer();
+
+	void updateButtonStates();
+	int  checkButtonState(Bounce button);
+	void setColorforAllParts();
+	void setColorForLedPart(uint8_t hue1,  uint8_t hue2, LedPart part);
+	void playAnimation();
+
+	struct CRGB * getTopLedsArray();
+	struct CRGB * getFrontLedsArray();
+	struct CRGB * getLeftLedsArray();
+	struct CRGB * getRightLedsArray();
+	struct CRGB * getBackLedsArray();
+	struct CRGB * getFeetLedsArray();
+	struct CRGB * getLedsForStripe(int nStripe, int nlength);
+
+
+
+};
+#endif /* TABLE_H_ */

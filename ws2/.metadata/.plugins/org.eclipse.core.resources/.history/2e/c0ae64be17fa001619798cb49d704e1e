@@ -1,0 +1,155 @@
+// Do not remove the include below
+#define USE_OCTOWS2811
+#include "CoolTable.h"
+#include "SingleStripeAnimationPlayer.h"
+
+const int maxBrightness = 150;
+int currentBrigthness = 130;
+Table table = Table();
+
+
+void setup() {
+	LEDS.addLeds<OCTOWS2811>(table.ledArray, NUM_LEDS_PER_STRIP);
+	LEDS.setBrightness(currentBrigthness);
+	FastLED.setBrightness(currentBrigthness);
+}
+
+void loop() {
+	table.update();
+	LEDS.show();
+}
+
+Table::Table() {
+	pinMode(buttonMutePumpPin, INPUT_PULLUP);
+	pinMode(buttonBrightnessPin, INPUT_PULLUP);
+	pinMode(buttonNextAnimationPin, INPUT_PULLUP);
+	pinMode(buttonUnknownsPin, INPUT_PULLUP);
+}
+
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+
+void Table::update() {
+
+	playAnimation();
+	updateButtonStates();
+}
+
+void Table::updateButtonStates() {
+
+	bool isButtonTogglePumpPressed = digitalReadFast(buttonMutePumpPin);
+	bool isButtonBrightnessPressed = digitalReadFast(buttonBrightnessPin);
+	isButtonNextAnimationPressed = digitalReadFast(buttonNextAnimationPin);
+	isButtonUnknownPressed = digitalReadFast(buttonUnknownsPin);
+
+	if (buttonMutePump.update()) {
+		if (buttonMutePump.fallingEdge()) {
+			isButtonTogglePumpPressed = true;
+		}
+	} else {
+		isButtonTogglePumpPressed = false;
+	}
+	Serial.println(isButtonTogglePumpPressed);
+
+	if (isButtonBrightnessPressed) {
+		currentBrigthness = currentBrigthness + 15;
+		if (currentBrigthness > maxBrightness) {
+			currentBrigthness = 10;
+		}
+		Serial.println("setting brightness to: " + currentBrigthness);
+		LEDS.setBrightness(currentBrigthness);
+		FastLED.setBrightness(currentBrigthness);
+	}
+	if (isButtonNextAnimationPressed){
+		Serial.println("Changing mode Button is Pressed");
+		animationMode++;
+	}
+}
+
+
+void Table::playAnimation(){
+player.update();
+switch (animationMode) {
+  case 0: player.octoWS2811StripTesterRainbow(ledArray, NUM_STRIPS, NUM_LEDS_PER_STRIP); break;
+  case 1: player.; break;
+  case 2: thisdelay = 20; break;                      //---STRIP RAINBOW FADE
+  case 3: thisdelay = 20; thisstep = 10; break;       //---RAINBOW LOOP
+  case 4: thisdelay = 20; break;                      //---RANDOM BURST
+  case 5: thisdelay = 20; thishue = 0; break;         //---CYLON v1
+  case 6: thisdelay = 40; thishue = 0; break;         //---CYLON v2
+  case 7: thisdelay = 40; thishue = 0; break;         //---POLICE LIGHTS SINGLE
+  case 8: thisdelay = 40; thishue = 0; break;         //---POLICE LIGHTS SOLID
+  case 9: thishue = 160; thissat = 50; break;         //---STRIP FLICKER
+  case 10: thisdelay = 15; thishue = 0; break;        //---PULSE COLOR BRIGHTNESS
+  case 11: thisdelay = 15; thishue = 0; break;        //---PULSE COLOR SATURATION
+  case 12: thisdelay = 60; thishue = 180; break;      //---VERTICAL SOMETHING
+  case 13: thisdelay = 100; break;                    //---CELL AUTO - RULE 30 (RED)
+  case 14: thisdelay = 40; break;                     //---MARCH RANDOM COLORS
+  case 15: thisdelay = 80; break;                     //---MARCH RWB COLORS
+  case 16: thisdelay = 60; thishue = 95; break;       //---RADIATION SYMBOL
+  //---PLACEHOLDER FOR COLOR LOOP VAR DELAY VARS
+  case 19: thisdelay = 35; thishue = 180; break;      //---SIN WAVE BRIGHTNESS
+  case 20: thisdelay = 100; thishue = 0; break;       //---POP LEFT/RIGHT
+  case 21: thisdelay = 100; thishue = 180; break;     //---QUADRATIC BRIGHTNESS CURVE
+  //---PLACEHOLDER FOR FLAME VARS
+  case 23: thisdelay = 50; thisstep = 15; break;      //---VERITCAL RAINBOW
+  case 24: thisdelay = 50; break;                     //---PACMAN
+  case 25: thisdelay = 35; break;                     //---RANDOM COLOR POP
+  case 26: thisdelay = 25; thishue = 0; break;        //---EMERGECNY STROBE
+  case 27: thisdelay = 25; thishue = 0; break;        //---RGB PROPELLER
+  case 28: thisdelay = 100; thishue = 0; break;       //---KITT
+  case 29: thisdelay = 50; thishue = 95; break;       //---MATRIX RAIN
+  case 50: thisdelay = 100; break;                    //---MARCH STRIP NOW CCW
+  case 51: thisdelay = 100; break;                    //---MARCH STRIP NOW CCW
+  case 88: thisdelay = 5; break;                      //---NEW RAINBOW LOOP
+  case 101: one_color_all(255,0,0); LEDS.show(); break;   //---ALL RED
+  case 102: one_color_all(0,255,0); LEDS.show(); break;   //---ALL GREEN
+  case 103: one_color_all(0,0,255); LEDS.show(); break;   //---ALL BLUE
+  case 104: one_color_all(255,255,0); LEDS.show(); break;   //---ALL COLOR X
+  case 105: one_color_all(0,255,255); LEDS.show(); break;   //---ALL COLOR Y
+  case 106: one_color_all(255,0,255); LEDS.show(); break;   //---ALL COLOR Z
+}
+bouncedirection = 0;
+one_color_all(0,0,0);
+ledMode = newmode;
+}
+
+
+
+
+
+
+struct CRGB * Table::getTopLedsArray() {
+	return getLedsForStripe(stripeNumTopLeds, numOfTopLeds);
+
+}
+struct CRGB * Table::getFrontLedsArray() {
+	return getLedsForStripe(stripeNumFrontLeds, numOfFrontLeds);
+
+}
+struct CRGB * Table::getLeftLedsArray() {
+	return getLedsForStripe(stripeNumleftLeds, numOfLeftLeds);
+
+}
+struct CRGB * Table::getRightLedsArray() {
+	return getLedsForStripe(stripeNumRightLeds, numOfRightLeds);
+
+}
+struct CRGB * Table::getBackLedsArray() {
+	return getLedsForStripe(stripeNumBackLeds, numOfBackLeds);
+
+}
+struct CRGB * Table::getFeetLedsArray() {
+	return getLedsForStripe(stripeNumFeetLeds, numOfFeetLeds);
+
+}
+
+struct CRGB * Table::getLedsForStripe(int nStripe, int nlength) {
+	int startpoint = 0;
+	for (int var = 1; var < nStripe; ++var) {
+		startpoint = startpoint + NUM_LEDS_PER_STRIP;
+	}
+	return ledArray(startpoint, nlength);
+
+}

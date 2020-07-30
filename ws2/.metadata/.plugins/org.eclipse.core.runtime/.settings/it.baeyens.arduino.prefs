@@ -1,0 +1,23 @@
+714=23
+Automatically\ import\ libraries=true
+Board=Teensy 3.2 / 3.1
+Board\ custom\ option\ selections=Processor\=\nUSB Type\=Serial\nCPU Speed\=96 MHz (overclock)\nKeyboard Layout\=German Swiss\nOptimize\=Fast
+Boards\ file=E\:\\ide\\Teensyduino\\arduino-1.8.1\\hardware\\teensy\\avr\\boards.txt
+Build\ before\ upload\ option=TRUE
+FmStatus=20
+FuStatub=583
+FuStatus=305
+JANTJE.TEMPLATE_FOLDER=
+JANTJE.TEMPLATE_USE_DEFAULT=1
+Last\ used\ Examples=
+Open\ serial\ connections\ with\ the\ monitor=true
+Private\ Library\ Path=E\:\\ide\\Teensyduino\\arduino-1.8.1\\hardware\\teensy\\avr\\libraries;C\:\\Users\\sleipnir\\Documents\\Arduino\\libraries
+Private\ hardware\ Path=E\:\\ide\\Teensyduino\\arduino-1.8.1\\hardware\\teensy
+Serial\ Monitor\ Last\ Used\ Line\ Ending\ index=3
+Serial\ Monitor\ Last\ Used\ auto\ scroll\ setting=true
+Serial\ monitor\ last\ selected\ Port=COM7
+Serial\ monitor\ last\ selected\ rate=9600
+UPLOAD.PROTOCOL=Default
+Upload\ port=COM3
+eclipse.preferences.version=1
+lFsStatus=887

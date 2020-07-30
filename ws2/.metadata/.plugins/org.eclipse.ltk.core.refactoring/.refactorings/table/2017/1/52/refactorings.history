@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Rename resource &apos;table/Table.cpp&apos; to &apos;Table.ino&apos;" description="Rename resource &apos;Table.cpp&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Table.cpp" name="Table.ino" stamp="1483307903205" updateReferences="true"/>&#x0A;<refactoring comment="Rename resource &apos;table/Table.ino&apos; to &apos;Table.cpp&apos;" description="Rename resource &apos;Table.ino&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Table.ino" name="Table.cpp" stamp="1483308029128" updateReferences="true"/>
+</session>

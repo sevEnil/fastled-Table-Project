@@ -1,0 +1,91 @@
+// Do not remove the include below
+#define USE_OCTOWS2811
+#include "CoolTable.h"
+#include "SingleStripeAnimationPlayer.h"
+
+
+
+
+
+int numOfTopLeds= 168;
+int numOfFrontLeds= 0;
+int numOfLeftLeds= 0;
+int numOfRightLeds= 0;
+int numOfBackLeds= 0;
+int numOfFeetLeds= 7;
+
+const int maxBrightness=150;
+int currentBrigthness =130;
+Table table = Table();
+SingleStripeAnimationPlayer player = SingleStripeAnimationPlayer();
+
+
+
+bool isButtonNextAnimationPressed=false;
+bool isButtonUnknownPressed=false;
+
+
+
+
+
+
+Table::Table() {
+	 pinMode(buttonMutePumpPin, INPUT_PULLUP);
+	 pinMode(buttonBrightnessPin, INPUT_PULLUP);
+	 pinMode(buttonNextAnimationPin, INPUT_PULLUP);
+	 pinMode(buttonUnknownsPin, INPUT_PULLUP);
+
+}
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+
+void setup() {
+
+ LEDS.addLeds<OCTOWS2811>(table.ledArray, NUM_LEDS_PER_STRIP);
+  LEDS.setBrightness(currentBrigthness);
+  FastLED.setBrightness(currentBrigthness);
+
+}
+
+
+void Table::updateButtonStates(){
+
+	bool isButtonTogglePumpPressed =digitalReadFast(buttonMutePumpPin);
+	bool isButtonBrightnessPressed=digitalReadFast(buttonBrightnessPin);
+	isButtonNextAnimationPressed=digitalReadFast(buttonNextAnimationPin);
+	isButtonUnknownPressed=digitalReadFast(buttonUnknownsPin);
+	if (buttonMutePump.update()) {
+	    if (buttonMutePump.fallingEdge()) {
+	    	isButtonTogglePumpPressed=true;
+	    }
+	  } else {
+		  isButtonTogglePumpPressed=false;
+	  }
+	Serial.println(isButtonTogglePumpPressed);
+	if(isButtonBrightnessPressed){
+		currentBrigthness = currentBrigthness + 15;
+		if(currentBrigthness > maxBrightness){
+			currentBrigthness =10;
+		}
+		Serial.println("setting brightness to: " + currentBrigthness);
+		LEDS.setBrightness(currentBrigthness);
+		FastLED.setBrightness(currentBrigthness);
+	}
+}
+
+
+
+
+void loop() {
+  table.updateButtonStates();
+  player.update();
+  player.octoWS2811StripTesterRainbow(table.ledArray, NUM_STRIPS, NUM_LEDS_PER_STRIP);
+  LEDS.show();
+
+}
+
+
+
+
+

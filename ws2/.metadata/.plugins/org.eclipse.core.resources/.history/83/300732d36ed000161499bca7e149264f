@@ -1,0 +1,27 @@
+/*
+ * Table.cpp
+ *
+ *  Created on: 01.01.2017
+ *      Author: sleipnir
+ */
+
+#include "Table.h"
+
+
+int numOfTopLeds= 0;
+int numOfFrontLeds= 0;
+int numOfLeftLeds= 0;
+int numOfRightLeds= 0;
+int numOfBackLeds= 0;
+int numOfFeetLeds= 7;
+
+
+Table::Table() {
+	// TODO Auto-generated constructor stub
+
+}
+
+Table::~Table() {
+	// TODO Auto-generated destructor stub
+}
+

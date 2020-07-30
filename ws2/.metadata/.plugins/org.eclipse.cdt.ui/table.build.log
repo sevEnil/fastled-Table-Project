@@ -1,0 +1,48 @@
+22:26:36 **** Build of configuration Release for project table ****
+"E:\\ide\\sloeber2\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ../.ino.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -O -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=96000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\Bounce" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED" -MMD -MP -MF".ino.cpp.d" -MT".ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../.ino.cpp" -o ".ino.cpp.o"  -Wall
+'Finished building: ../.ino.cpp'
+' '
+'Building file: ../Airpump.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -O -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=96000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\Bounce" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED" -MMD -MP -MF"Airpump.cpp.d" -MT"Airpump.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../Airpump.cpp" -o "Airpump.cpp.o"  -Wall
+'Finished building: ../Airpump.cpp'
+' '
+'Building file: ../BasicColorTestPlayer.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -O -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=96000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\Bounce" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED" -MMD -MP -MF"BasicColorTestPlayer.cpp.d" -MT"BasicColorTestPlayer.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../BasicColorTestPlayer.cpp" -o "BasicColorTestPlayer.cpp.o"  -Wall
+'Finished building: ../BasicColorTestPlayer.cpp'
+' '
+'Building file: ../Table.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -O -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=96000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\Bounce" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED" -MMD -MP -MF"Table.cpp.d" -MT"Table.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../Table.cpp" -o "Table.cpp.o"  -Wall
+In file included from ../Table.h:9:0,
+                 from ../Table.cpp:2:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:12:2: warning: #warning FastLED version 3001000 (Not really a warning, just telling you here.) [-Wcpp]
+ #warning FastLED version 3001000  (Not really a warning, just telling you here.)
+  ^
+../Table.cpp:36:1: error: 'CRGBArray' does not name a type
+ CRGBArray<NUM_STRIPS * NUM_LEDS_PER_STRIP> leds;
+ ^
+../Table.cpp: In constructor 'Table::Table()':
+../Table.cpp:40:9: error: 'leds' was not declared in this scope
+ leds(1,9);
+         ^
+../Table.cpp: In function 'void setup()':
+../Table.cpp:50:26: error: 'leds' was not declared in this scope
+ LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                          ^
+../Table.cpp: In function 'void someAnymation()':
+../Table.cpp:93:4: error: 'leds' was not declared in this scope
+    leds[(i * NUM_LEDS_PER_STRIP) + j] = CHSV((32 * i) + hue + j, 192,
+    ^
+../Table.cpp:100:4: error: 'leds' was not declared in this scope
+    leds[(i * NUM_LEDS_PER_STRIP) + j] = CRGB::Red;
+    ^
+subdir.mk:54: recipe for target 'Table.cpp.o' failed
+make: *** [Table.cpp.o] Error 1
+
+22:26:37 Build Finished (took 1s.436ms)
+

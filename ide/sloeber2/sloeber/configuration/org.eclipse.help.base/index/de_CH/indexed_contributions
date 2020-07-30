@@ -1,0 +1,25 @@
+#This is a generated file; do not edit.
+#Mon Feb 20 23:37:03 CET 2017
+org.eclipse.help.base=org.eclipse.help.base\n4.1.0.v20160606-1100
+org.eclipse.mylyn.help.ui=org.eclipse.mylyn.help.ui\n3.20.0.v20160425-1835
+org.eclipse.epp.mpc.ui=org.eclipse.epp.mpc.ui\n1.5.0.v20160608-1804
+org.eclipse.jdt=org.eclipse.jdt\n3.12.0.v20160606-1100
+org.eclipse.rse.doc.user=org.eclipse.rse.doc.user\n3.4.100.201403101646
+de.bastiankrol.startexplorer=de.bastiankrol.startexplorer\n1.7.0.201509091830
+org.eclipse.jdt.doc.user=org.eclipse.jdt.doc.user\n3.12.0.v20160601-2148
+org.eclipse.egit.doc=org.eclipse.egit.doc\n4.4.0.201606070830-r
+org.eclipse.cdt=org.eclipse.cdt\n9.0.0.201606062011
+org.eclipse.ui.cheatsheets=org.eclipse.ui.cheatsheets\n3.5.0.v20160504-0839
+name.schedenig.eclipse.grepconsole=name.schedenig.eclipse.grepconsole\n3.7.0
+org.eclipse.ui.intro=org.eclipse.ui.intro\n3.5.0.v20160509-1548
+org.eclipse.help=org.eclipse.help\n3.7.0.v20160602-1307
+it.baeyens.arduino.application=it.baeyens.arduino.application\n3.1.0.201608031424
+org.eclipse.mylyn.wikitext.help.ui=org.eclipse.mylyn.wikitext.help.ui\n2.9.0.v20160524-0547
+org.eclipse.cdt.doc.user=org.eclipse.cdt.doc.user\n5.4.0.201606062011
+org.eclipse.epp.mpc.help.ui=org.eclipse.epp.mpc.help.ui\n1.5.0.v20160524-1910
+org.eclipse.pde.doc.user=org.eclipse.pde.doc.user\n3.12.0.v20160601-2148
+org.eclipse.platform=org.eclipse.platform\n4.6.0.v20160606-1100
+org.eclipse.cdt.autotools.docs=org.eclipse.cdt.autotools.docs\n2.0.2.201606062011
+org.eclipse.pde=org.eclipse.pde\n3.12.0.v20160606-1100
+org.eclipse.platform.doc.user=org.eclipse.platform.doc.user\n4.6.0.v20160606-1250
+org.eclipse.ui.intro.universal=org.eclipse.ui.intro.universal\n3.3.0.v20160519-1604

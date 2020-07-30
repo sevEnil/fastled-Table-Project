@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Create method someAnymation" description="Extract Method Refactoring" fileName="file:/E:/ws2/table/Table.cpp" flags="4" id="org.eclipse.cdt.internal.ui.refactoring.extractfunction.ExtractFunctionRefactoring" name="someAnymation" replaceDuplicates="false" selection="1984,425" stamp="1487196520552" visibility="private"/>
+</session>

@@ -1,0 +1,112 @@
+00:39:09 **** Incremental Build of configuration Release for project TableFastled2 ****
+"E:\\ide\\sloeber2\\sloeber\\arduinoPlugin\\tools\\make\\make" all 
+'Building file: ../.ino.cpp'
+'Starting C++ compile'
+"E:/ide/teensy/arduino/arduino-1.6.8/hardware/teensy/../tools/arm/bin/arm-none-eabi-g++" -c -Os -g -Wall -ffunction-sections -fdata-sections -nostdlib -MMD -fno-exceptions -felide-constructors -std=gnu++0x -fno-rtti -mthumb -mcpu=cortex-m4 -fsingle-precision-constant -D__MK20DX256__ -DTEENSYDUINO=128 -DARDUINO=10609 -DF_CPU=72000000 -DUSB_SERIAL -DLAYOUT_GERMAN_SWISS  -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\cores\teensy3" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\OctoWS2811" -I"E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED" -MMD -MP -MF".ino.cpp.d" -MT".ino.cpp.o" -D__IN_ECLIPSE__=1 -x c++ "../.ino.cpp" -o ".ino.cpp.o"  -Wall
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:12:2: warning: #warning FastLED version 3001000 (Not really a warning, just telling you here.) [-Wcpp]
+ #warning FastLED version 3001000  (Not really a warning, just telling you here.)
+  ^
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino: In function 'void setup()':
+../OctoWS2811Demo2.ino:14:52: error: no matching function for call to 'CFastLED::addLeds(CRGB [1312], int)'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+../OctoWS2811Demo2.ino:14:52: note: candidates are:
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:172:129: note: template<ESPIChipsets CHIPSET, unsigned char DATA_PIN, unsigned char CLOCK_PIN, EOrder RGB_ORDER, unsigned char SPI_DATA_RATE> CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET,  uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER, uint8_t SPI_DATA_RATE > CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                                                                                                 ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:172:129: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:184:95: note: template<ESPIChipsets CHIPSET, unsigned char DATA_PIN, unsigned char CLOCK_PIN> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET,  uint8_t DATA_PIN, uint8_t CLOCK_PIN > static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                                                               ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:184:95: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:196:113: note: template<ESPIChipsets CHIPSET, unsigned char DATA_PIN, unsigned char CLOCK_PIN, EOrder RGB_ORDER> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET,  uint8_t DATA_PIN, uint8_t CLOCK_PIN, EOrder RGB_ORDER > static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                                                                                 ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:196:113: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:209:56: note: template<ESPIChipsets CHIPSET> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET> static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                        ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:209:56: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:213:74: note: template<ESPIChipsets CHIPSET, EOrder RGB_ORDER> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET, EOrder RGB_ORDER> static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                                          ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:213:74: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:217:97: note: template<ESPIChipsets CHIPSET, EOrder RGB_ORDER, unsigned char SPI_DATA_RATE> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  template<ESPIChipsets CHIPSET, EOrder RGB_ORDER, uint8_t SPI_DATA_RATE> static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                                                                                                 ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:217:97: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'ESPIChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:244:25: note: template<template<unsigned char DATA_PIN, EOrder RGB_ORDER> class CHIPSET, unsigned char DATA_PIN, EOrder RGB_ORDER> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:244:25: note:   template argument deduction/substitution failed:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:250:25: note: template<template<unsigned char DATA_PIN, EOrder RGB_ORDER> class CHIPSET, unsigned char DATA_PIN> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:250:25: note:   template argument deduction/substitution failed:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:256:25: note: template<template<unsigned char DATA_PIN> class CHIPSET, unsigned char DATA_PIN> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:256:25: note:   template argument deduction/substitution failed:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:292:25: note: template<template<EOrder RGB_ORDER> class CHIPSET, EOrder RGB_ORDER> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:292:25: note:   template argument deduction/substitution failed:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:298:25: note: template<template<EOrder RGB_ORDER> class CHIPSET> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:298:25: note:   template argument deduction/substitution failed:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:354:25: note: template<EBlockChipsets CHIPSET, int NUM_LANES, EOrder RGB_ORDER> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:354:25: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'EBlockChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+In file included from ../.ino.cpp:9:0:
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:380:25: note: template<EBlockChipsets CHIPSET, int NUM_LANES> static CLEDController& CFastLED::addLeds(CRGB*, int, int)
+  static CLEDController &addLeds(struct CRGB *data, int nLedsOrOffset, int nLedsIfOffset = 0) {
+                         ^
+E:\ide\teensy\arduino\arduino-1.6.8\hardware\teensy\avr\libraries\FastLED/FastLED.h:380:25: note:   template argument deduction/substitution failed:
+In file included from ../.ino.cpp:14:0:
+../OctoWS2811Demo2.ino:14:52: error: could not convert template argument 'OCTOWS2811' to 'EBlockChipsets'
+   LEDS.addLeds<OCTOWS2811>(leds, NUM_LEDS_PER_STRIP);
+                                                    ^
+subdir.mk:24: recipe for target '.ino.cpp.o' failed
+make: *** [.ino.cpp.o] Error 1
+
+00:39:09 Build Finished (took 750ms)
+
